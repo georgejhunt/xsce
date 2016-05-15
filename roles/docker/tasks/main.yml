@@ -4,6 +4,7 @@
         - docker
         - python-docker-py
   when: docker_install
+  tags: download
   
 - name: put the systemd startup file in place
   template: src=docker.service
@@ -26,13 +27,28 @@
         mode=0644
         state=directory
 
-- name: Start the docker service, if enabled
-  service: enabled=yes
+- name: Enable docker
+  service: name=docker
            state=started
+           enabled=true
   when: docker_enabled
-           
-- name: stop the docker daemon
-  service: enabled=no       
+
+- name: Disable docker
+  service: name=docker
            state=stopped
+           enabled=false
   when: not docker_enabled
-               
+
+- name: add docker to service list
+  ini_file: dest='{{ service_filelist }}'
+            section=docker
+            option='{{ item.option }}'
+            value='{{ item.value }}'
+  with_items:
+    - option: name
+      value: Docker Container
+    - option: description
+      value: '"Docker allows a person to package an application with all of its dependencies into a standardized unit for software development."'
+    - option: enabled
+      value: "{{ docker_enabled }}"
+>>>>>>> 574bacd207d11bb4b82de6ac09c959ed41672525
