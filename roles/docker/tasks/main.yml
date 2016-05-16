@@ -51,4 +51,3 @@
       value: '"Docker allows a person to package an application with all of its dependencies into a standardized unit for software development."'
     - option: enabled
       value: "{{ docker_enabled }}"
->>>>>>> 574bacd207d11bb4b82de6ac09c959ed41672525
