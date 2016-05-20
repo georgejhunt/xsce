@@ -2,7 +2,7 @@
   template: src=ce:stable.repo dest=/etc/yum.repos.d/
 
 - name: Install owncloud package
-  yum: pkg={{ item }} state=installed
+  package: pkg={{ item }} state=installed
   with_items:
   - owncloud
   tags:
