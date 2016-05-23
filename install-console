@@ -31,7 +31,7 @@ then
 fi
 
 export ANSIBLE_LOG_PATH="$XSCE_DIR/xsce-install.log"
-ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local
+nsible-playbook -i $INVENTORY $PLAYBOOK --connection=local
 
 if [ -f /etc/selinux/config ]
 then
