@@ -27,7 +27,8 @@
   when: not kalite_installed.stat.exists and is_F18
 
 - include: install.yml
-  when: not kalite_installed.stat.exists and not is_F18
+# debugging in debian
+#  when: not kalite_installed.stat.exists and not is_F18
 
 - name: ask systemd to reread the unit files
   shell: systemctl daemon-reload
