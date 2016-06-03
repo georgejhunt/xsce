@@ -15,7 +15,7 @@
 
 - name: Install home page and content config file
   template: src={{ item }}
-            dest=/etc/httpd/conf.d/
+            dest=/etc/apache2/sites-available/
             owner=root
             group=root
             mode=0644
@@ -23,4 +23,15 @@
             - content_dir.conf
             - xsce-home-page.conf
   when: not installing
+
+- name: enable the pages
+  file: path=/etc/apache2/sites-enabled/{{ item }}
+        src=/etc/apache2/sites-available/{{ item }} 
+        state=link
+  with_items:
+      - content_dir.conf
+      - xsce-home-page.conf
   notify: restart apache
+
+- name: enable mod_rewrite
+  apache2_module: name=rewrite

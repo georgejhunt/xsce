@@ -17,6 +17,7 @@
             section=main
             option=keepcache
             value=1
+  when: ansible_distribution != "Debian"
 
 # Put conditional includes for platforms here
 ##  DISCOVER PLATFORMS ######

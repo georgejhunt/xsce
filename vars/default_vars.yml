@@ -208,7 +208,7 @@ moodle_enabled: False
 
 # Internet-in-a-Box
 iiab_install: True
-iiab_enabled: True
+iiab_enabled: False
 
 # Pathagar
 pathagar_install: True

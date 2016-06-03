@@ -1,4 +1,4 @@
-elgg_xx: elgg-1.10.1
+elgg_xx: elgg
 
 # elgg_mysql_password: defined in default_vars
 elgg_url: /elgg
@@ -7,6 +7,7 @@ elgg_install: True
 elgg_enabled: False
 
 # following variables used in elgg engine/settings.php template
+timezone: America/New_York
 dbuser: elgguser
 dbpassword: "{{ elgg_mysql_password }}"
 dbname: elggdb
