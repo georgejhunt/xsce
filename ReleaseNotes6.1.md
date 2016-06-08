@@ -26,7 +26,7 @@ The install instructions have not changed much since release-6.0. Please refer t
 
 Here are specific instructions for Release 6.1:
 
-* Starting from scratch on release 6.1 requires a few more packages than 6.1. (It still starts from a  a minimal or netinstal of fedora 22 of CentOS 7.
+* Starting from scratch on release 6.1 requires a few more packages than 6.0. (It still starts from a  a minimal or netinstal of fedora 22 of CentOS 7).
 ```
   yum install -y ansible1.9 git redhat-rpm-config dnf-python libsyslinux-python
   cd /opt
