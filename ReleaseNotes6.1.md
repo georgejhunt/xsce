@@ -22,4 +22,18 @@ If you want to enable a service, you must browse to http://schoolserver.lan/admi
 
 **How Do I Install 6.1?**
 
-The install instructions have not changed much since release-6.0. Please refer to https://github.com/XSCE/xsce/wiki/XSCE-Installation
+The install instructions have not changed much since release-6.0. Please refer to https://github.com/XSCE/xsce/wiki/XSCE-Installation for the overall general instructions.
+
+Here are specific instructions for Release 6.1:
+
+* Start with a minimal or netinstal of fedora 22 of CentOS 7.
+
+  yum install -y ansible1.9 git redhat-rpm-config dnf-python libsyslinux-python
+  cd /opt
+  mkdir schoolserver
+  cd schoolserver
+  git clone https://github.com/XSCE/xsce --branch release-6.1 --depth 1
+  cd xsce
+  ./install-console
+
+  
