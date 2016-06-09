@@ -1,7 +1,7 @@
 # get local vars from scripts in /etc/ansible/facts.d
 
 - name: re-read facts
-  setup: filter=ansible_local
+  setup: filter=*
 
 # set top level variables from local facts for convenience
 - set_fact:
