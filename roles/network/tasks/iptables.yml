@@ -30,6 +30,12 @@
   tags:
     - download
 
+- name: Install connection tracking tools 
+  yum: name=conntrack-tools
+       state=installed
+  tags:
+    - download
+
 - name: Install iptables services
   template: src={{ item.0 }}
             dest={{ item.1 }}
@@ -39,4 +45,14 @@
   with_items:
    - { 0: 'gateway/iptables-config', 1: '/etc/sysconfig/iptables-config', 2: '0644' }
    - { 0: 'gateway/check-LAN', 1: '/usr/bin/check-LAN', 2: '0755' }
+   - { 0: 'gateway/apache', 1: '/etc/sudoers.d/apache', 2: '0640' }
+
+- name: Create a flat file for users who have been captured (no redirection)
+  file: path=/var/lib/users
+        state=touch
+        owner=root
+        group=apache
+        mode=0660
+# format of this file: ip <space> MAC <space> `date +%s`
+
 

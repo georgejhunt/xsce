@@ -50,6 +50,7 @@ gui_wan={{ gui_wan }}
 gui_port={{ gui_port }}
 xsce_gateway_enabled={{ xsce_gateway_enabled }}
 block_DNS={{ block_DNS }}
+capture_enabled={{ capture_enabled }}
 
 echo "Lan is $lan and WAN is $wan"
 #
@@ -61,6 +62,38 @@ echo "Lan is $lan and WAN is $wan"
 /sbin/modprobe ip_conntrack
 /sbin/modprobe iptable_nat
 clear_fw
+
+# Capture all http requests to our portal entrance
+if [  "$capture_enabled" == "True" ]; then    
+    # create a table for processing user web access
+    $IPTABLES -N internet -t mangle
+    # send all of our traffic there
+    $IPTABLES -t mangle -A PREROUTING -j internet
+    # read through the subscriptions, delete over expire period
+    now=`date +%s`
+    while IFS="" read -r line
+    do
+       timestamp=`echo $line|cut -d" " -f3`
+       age=$(( $now - $timestamp ))
+       ip=`echo $line|cut -d" " -f1`
+       mac=`echo $line|cut -d" " -f2`
+       if [ $age -gt 60*60*24 ]; then
+          expire $ip $mac
+       fi
+     done
+
+     # return from internet table if mac is known
+     gawk '{ system("$IPTABLES -t mangle -A internet -m mac --mac-source "$2" -j RETURN"); }' /var/lib/users
+     # MAC address not found. Mark the packet 99
+     $IPTABLES -t mangle -A internet -j MARK --set-mark 99
+
+     # Redirect web requests from Unauthorised users to logon Web Page
+     $IPTABLES -t nat -A PREROUTING -m mark --mark 99 -p tcp --dport 80 -j DNAT --to-destination 172.18.96.1
+     $IPTABLES -t filter -A FORWARD -m mark --mark 99 -j DROP
+
+ 
+# work in progress here
+fi   
 
 # Allow established connections, and those not coming from the outside
 $IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
@@ -83,7 +116,7 @@ fi
 
 $IPTABLES -A FORWARD -i $wan -o $lan -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-#Block https traffic except if directed at server
+#Block https traffic except if directed at erver
 if [  "$gw_block_https" == "True" ]; then    
     $IPTABLES -A FORWARD -p tcp ! -d 172.18.96.1 --dport 443 -j DROP
 fi   
