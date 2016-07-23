@@ -1,0 +1,59 @@
+#! /usr/bin/env python
+# Python's bundled WSGI server
+
+from wsgiref.simple_server import make_server
+import subprocess
+from dateutil.tz import *
+import datetime
+import os
+
+def tstamp(dtime):
+    '''return a UNIX style seconds since 1970 for datetime input'''
+    epoch = datetime.datetime(1970, 1, 1,tzinfo=tzutc())
+    newdtime = dtime.astimezone(tzutc())
+    since_epoch_delta = newdtime - epoch
+    return since_epoch_delta.total_seconds()
+
+def application (environ, start_response):
+    ip = environ['REMOTE_ADDR'].strip()
+    cmd="arp -an %s|gawk \'{print $4}\'" % ip
+    mac = subprocess.check_output(cmd, shell=True)
+    cmd="sudo iptables -I internet 1 -t mangle -m mac --mac-source %s -j RETURN"%mac
+    print(cmd)
+    found = False
+    if os.path.exists("/var/lib/users"):
+       with open("/var/lib/users","r") as users:
+          for line in users:
+             print line, ip
+             if ip in line:
+                found = True
+                break
+    if not found:
+       with open("/var/lib/users","a") as users:
+           ts=tstamp(datetime.datetime.now(tzutc()))
+           ymd=datetime.datetime.today().strftime("%y%m%d-%H%M")
+           outstr ="%s %s %s %s\n" %  (ip, mac.strip(), ts,ymd,) 
+           users.write(outstr)
+
+    response_body = "This worked"
+
+    status = '200 OK'
+    response_headers = [
+        ('Content-Type', 'text/plain'),
+        ('Content-Length', str(len(response_body)))
+    ]
+    start_response(status, response_headers)
+
+    return [response_body]
+
+# Instantiate the server
+httpd = make_server (
+    "192.168.123.115", # The host name
+    8051, # A port number where to wait for the request
+    application # The application object name, in this case a function
+)
+
+# Wait for a single request, serve it and quit
+httpd.handle_request()
+# vim: tabstop=3 expandtab shiftwidth=3 softtabstop=3 background=light
+
