@@ -1,0 +1,26 @@
+- name: Install vnc packages
+  package: name={{ item }}
+           state=present
+  with_items:
+        - tigervnc-server
+  when: ansible_distribution == "Fedora" or ansible_distribution == "CentOS"
+  tags: download
+
+- nme: Download the noVNC source from our copy
+  get_urn: src={{ xsce_download_url }}/{{ novnc_version }}
+           dest={{ download_dir }}
+  tags: download2
+
+- name: Expand novnc to our root directory
+  archive: src={{ download_dir }}/{{ novnc_version }}
+           dest={{ xsce_base }}
+
+- name: Create a link pointing to the current version
+  file: src={{ xsce_base }}/{{ novnc_version }}
+        dest={{ xsce_base }}/novnc
+        state=link  
+
+- name: Install the mate desktop for use with VNC
+  shell: 'yum -y groupinstall "MATE Desktop"'
+  when: ansible_distribution == "Fedora" or ansible_distribution == "CentOS"
+
