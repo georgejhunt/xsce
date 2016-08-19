@@ -45,6 +45,7 @@
      - { src: 'xstartup', dest: '/home/xsce-admin/.vnc/' }
      - { src: 'display-desktop', dest: '/home/xsce-admin/bin/' }
      - { src: 'secure-desktop', dest: '/home/xsce-admin/bin/' }
+     - { src: 'vnc', dest: '/etc/init.d/ }
 
 - name: copy the password file -- binary confuses template module
   copy: src=passwd
