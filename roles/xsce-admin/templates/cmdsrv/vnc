@@ -2,7 +2,7 @@
 #
 # description: Starts and stops vncserver. \
 #	       used to provide remote X administration services.
-source /etc/init.d/functions
+. /lib/lsb/init-functions
 
 unset VNCSERVERARGS
 VNCSERVERS="1:xsce-admin"
