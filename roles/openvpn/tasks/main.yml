@@ -41,6 +41,7 @@
     - { src: 'xsce-vpn.conf.in', dest: '/etc/openvpn/xsce-vpn.conf.in', owner: "root" , mode: '0644' }
     - { src: 'xs-vpn', dest: '/usr/bin/xs-vpn', owner: "root" , mode: '0755' }
     - { src: 'xs-handle', dest: '/usr/bin/xs-handle', owner: "root" , mode: '0755' }
+    - { src: 'up_wan', dest: '/usr/lib/xsce/up_wan', owner: "root" , mode: '0755' }
 
 - name: check for manually configured openvpn tunnel
   stat: path=/etc/openvpn/xsce-vpn.conf

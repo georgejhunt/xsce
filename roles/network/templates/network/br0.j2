@@ -25,7 +25,7 @@ iface {{discovered_wan_iface }} inet manual
    pre-up   ifconfig $IFACE up
    pre-down ifconfig $IFACE down
 {% if openvpn_enabled %}
-   post-up {{ xsce_base }}/roles/network/templates/network/up_wan
+   post-up /usr/lib/xsce/up_wan
 {% endif %}
 
 auto {{ discovered_wireless_iface }}
