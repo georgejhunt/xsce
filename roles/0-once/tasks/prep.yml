@@ -4,6 +4,7 @@
             src=xsce-extra.repo
             owner=root
             mode=0666
+  when: ansible_distribution != "Debian"
 
 - name: Install xsce-testing repos
   template: backup=yes
@@ -11,6 +12,7 @@
             src=xsce-testing.repo
             owner=root
             mode=0666
+  when: ansible_distribution != "Debian"
 
 - name: Install rpmfusion-free-updates repo -- for exfat
   template: dest=/etc/yum.repos.d/rpmfusion-free-updates.repo
@@ -75,7 +77,7 @@
 
 - name: Install xsce-prep.service
   template: src=xsce-prep.service
-            dest=/usr/lib/systemd/system
+            dest=/etc/systemd/system/
             owner=root
             group=root
             mode=0755
