@@ -8,6 +8,15 @@
   when: ansible_distribution == "Fedora" or ansible_distribution == "CentOS"
   tags: download
 
+- name: Install vnc packages
+  package: name={{ item }}
+           state=present
+  with_items:
+        - vnc4server
+        - websockify
+  when: ansible_distribution == "Debian"
+  tags: download
+
 - name: Download the noVNC source from our copy
   get_url: url={{ xsce_download_url }}/{{ novnc_version }}.tar.gz
            dest={{ downloads_dir }}
