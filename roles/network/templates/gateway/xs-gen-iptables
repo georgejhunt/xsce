@@ -1,6 +1,6 @@
 #!/bin/bash -x
 IPTABLES=/sbin/iptables
-IPTABLES_DATA=/etc/sysconfig/iptables
+IPTABLES_DATA=/etc/iptables.up.rules
 LANIF=`cat /etc/sysconfig/xs_lan_device`
 WANIF=`cat /etc/sysconfig/xs_wan_device`
 
@@ -107,5 +107,5 @@ fi
 # Enable routing.
 echo 1 > /proc/sys/net/ipv4/ip_forward
 # save the whole rule set now
-iptables-persistent save
+iptables-save > $IPTABLES_DATA
 exit 0
