@@ -3,4 +3,4 @@
 vncconfig -iconic &
 unset SESSION_MANAGER
 unset DBUS_SESSION_BUS_ADDRESS
-exec lxsession -s LXDE-pi
+exec lxsession -s LXDE-pi -e LXDE-pi
