@@ -1519,8 +1519,10 @@ function startVnc()
   sendCmdSrvCmd(command, genericCmdHandler);
   var loc = window.location;
   var url = "http://" + loc.hostname + ":6080/vnc_auto.html?password=desktop";
-  var w = 1152;
-  var h = 864;
+  //var w = 1152;
+  //var h = 864;
+  var w = 800;
+  var h = 600;
   if (w > screen.width){
      w = screen.width;
   }
