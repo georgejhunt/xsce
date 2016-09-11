@@ -88,7 +88,7 @@
   postgresql_db: name=moodle
                  encoding=utf8
                  owner=Admin
-                 template=template0
+                 template=template1
                  state=present
   become: yes
   become_user: postgres
