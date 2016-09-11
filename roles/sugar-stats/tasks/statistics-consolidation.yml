@@ -41,8 +41,8 @@
 
 - name: Create postgres user
   postgresql_user: user=statsconso password=statsconso
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Create postgres database
   postgresql_db: db=statsconso owner=statsconso
