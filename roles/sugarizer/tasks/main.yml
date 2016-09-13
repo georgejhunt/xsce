@@ -30,11 +30,11 @@
   with_items:
      - { src: 'sugarizer.service.j2' , dest: '/etc/systemd/system/sugarizer.service'}
      - { src: 'sugarizer.ini' , dest: '{{ sugarizer_location }}/sugarizer/server' }
-     - { src: 'sugarizer.conf' , dest: '/etc/apache2/sites-available' }
+#     - { src: 'sugarizer.conf' , dest: '/etc/apache2/sites-available' }
 
 - name: turn on mod_proxy
   command: a2enmod {{ item }}
-  with_items
+  with_items:
      - proxy
      - proxy_html
      - headers
