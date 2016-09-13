@@ -1,3 +1,11 @@
+- name: Add a udev rule to transfer hwclock to system clock at dev creation
+  template: src=92-rtc-i2c.rules
+            dest=/etc/udev/rules.d/92-rtc-i2c.rules
+            owner=root
+            group=root
+            mode=0644
+  when: rtc_id is defined and rtc_id != "none"
+
 - name: Use compiled hostapd, and wpa_supplicant if tplink WM725M
   set_fact:
      driver_name: rtl871xdrv
@@ -29,6 +37,12 @@
         owner=root
         group=root
   when: wifi_id  ==  "tplink_WM725M" and rpi_model == "rpi2"
+
+- name: pre-Install packages
+  package: name={{ item }}
+           state=latest
+  with_items:
+    - ntp
 
 - name: Add rpi rootfs resizing service
   template: src={{ item.src }}

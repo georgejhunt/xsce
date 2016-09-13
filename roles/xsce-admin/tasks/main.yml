@@ -1,6 +1,7 @@
 - include: admin-user.yml
   tags:
     - base
+  when: not no_admin is defined
 
 - include: access.yml
   tags:
@@ -15,6 +16,12 @@
   tags:
     - base
     - console
+
+- include: vnc.yml
+  tags:
+    - base
+    - console
+  when: novnc_install
 
 - name: Add xsce-admin parameters to ini file
   ini_file: dest='{{ service_filelist }}'

@@ -8,6 +8,10 @@
   tags:
     - download
   
+- name: Put our own config file in place, to permit local lan admin
+  template: dest=/etc/cups/cupsd.conf
+            src=cupsd.conf
+
 - name: Enable services for cups
   service: name={{ item }}
            state=started
@@ -15,7 +19,13 @@
   with_items:
     - cups
     - cups-browsed
-  when: cups_enabled
+  when: cups_enabled and not is_F18
+
+- name: Enable services for cups for xo's
+  service: name=cups
+           state=started
+           enabled=yes
+  when: cups_enabled and is_F18
 
 - name: Permit headless admin of CUPS -- only works when cups daemon is running
   shell: "cupsctl --remote-admin"
@@ -28,7 +38,13 @@
   with_items:
     - cups
     - cups-browsed
-  when: not cups_enabled
+  when: not cups_enabled and not is_F18
+
+- name: Disable services for cups for xo's
+  service: name=cups
+           state=stopped
+           enabled=no
+  when: not cups_enabled and is_F18
 
 - name: add cups to service list
   ini_file: dest={{ service_filelist }}

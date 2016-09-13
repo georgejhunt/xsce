@@ -101,25 +101,6 @@
         group=root
         state=link
 
-- name: Set permissions on sqlite db
-  file: dest="{{ cmdsrv_path }}/{{xsce_cmdsrv_dbname }}"
-        mode=0600
-        owner=root
-        group=root
-        state=touch
-
-- name: See if default config_vars.yml exists
-  stat: path=/etc/xsce/config_vars.yml
-  register: config_vars
-
-- name: Install default config_vars.yml
-  template: src=cmdsrv/config_vars.yml
-            dest=/etc/xsce/config_vars.yml
-            owner=root
-            group=root
-            mode=0644
-  when: config_vars.stat.exists == false
-
 - name: Create cmdsrv.conf file
   template: backup=yes
             src=cmdsrv/cmdsrv.conf.j2
@@ -152,3 +133,4 @@
            enabled=yes
 
 #  when: xsce-cmdsrv_enabled - always enabled
+

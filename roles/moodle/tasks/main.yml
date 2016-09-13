@@ -4,9 +4,16 @@
            state=present
   with_items:
     - python-psycopg2
-    - php-pgsql
+    - php5-pgsql
   tags:
     - download
+
+- name: see if moodle is already downloaded
+  stat: path={{ moodle_base }}/config-dist.php
+  register: config_file
+
+- debug: var=config_file
+- debug: var=no_network
 
 - name: Download the latest moodle repo
   git: repo={{ moodle_repo_url }}
@@ -15,26 +22,25 @@
        force=yes
        version="MOODLE_{{ moodle_version }}_STABLE"
 #  ignore_errors: yes
-  when: not {{ use_cache }} and not {{ no_network }}
+  when: not {{ use_cache }} and not {{ no_network }} and config_file.stat.exists is defined and not config_file.stat.exists
   tags:
     - download2
 
-- name: Give apache permission to write moodle directory
+- name: Give apache permission to write moodle directory (config file)
   file: path={{ moodle_base }}
-        group=apache
+        group=www-data
         mode=0775
         state=directory
-#        recurse=true
 
 - name: Give apache permission to write moodle data directory
   file: path={{ content_base }}/dbdata/moodle
-        owner=apache
+        owner=www-data
         mode=0775
         state=directory
 
 - name: Create a moodle data dir with apache permission to write 
   file: path={{ moodle_data }}
-        owner=apache
+        owner=www-data
         group=apache
         mode=0770
         state=directory
@@ -53,7 +59,7 @@
 
 - name: Enable moodle
   file: path=/etc/apache2/sites-enabled/022-moodle.conf
-        src=/etc/apache2/sites-available/moodle.conf
+        src=/etc/apache2/sites-available/022-moodle.conf
         state=link
   when: moodle_enabled
 
@@ -75,8 +81,8 @@
                    password=changeme
                    role_attr_flags=NOSUPERUSER,NOCREATEROLE,NOCREATEDB
                    state=present
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Create database
   postgresql_db: name=moodle
@@ -84,8 +90,8 @@
                  owner=Admin
                  template=template0
                  state=present
-  sudo: yes
-  sudo_user: postgres
+  become: yes
+  become_user: postgres
 
 - name: Put a startup install script in place
   template: dest={{moodle_base}}
@@ -108,6 +114,13 @@
   shell: '{{moodle_base}}/moodle_installer'
   when: moodle_enabled and config.stat.exists is defined and not config.stat.exists
   
+- name: Give apache permission to read config file
+  file: path={{ moodle_base }}/config.php
+        group=apache
+        mode=0640
+        state=file
+  when: moodle_enabled
+
 - name: add moodle to service list
   ini_file: dest='{{ service_filelist }}'
             section=moodle

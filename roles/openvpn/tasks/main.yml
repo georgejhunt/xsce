@@ -24,8 +24,7 @@
         mode=0755
 
 - name: Configure openvpn
-  template: backup=yes
-            src={{ item.src }}
+  template: src={{ item.src }}
             dest={{ item.dest }}
             owner={{ item.owner }}
             group=root
@@ -42,6 +41,7 @@
     - { src: 'xsce-vpn.conf.in', dest: '/etc/openvpn/xsce-vpn.conf.in', owner: "root" , mode: '0644' }
     - { src: 'xs-vpn', dest: '/usr/bin/xs-vpn', owner: "root" , mode: '0755' }
     - { src: 'xs-handle', dest: '/usr/bin/xs-handle', owner: "root" , mode: '0755' }
+    - { src: 'up_wan', dest: '/usr/lib/xsce/up_wan', owner: "root" , mode: '0755' }
 
 - name: check for manually configured openvpn tunnel
   stat: path=/etc/openvpn/xsce-vpn.conf
@@ -50,11 +50,15 @@
 # note that ansible does not currently handle @ in a service name
 - name:  enable the openvpn tunnel at boot time
   shell: systemctl enable openvpn@xscenet.service
-  when:  openvpn_enabled and not stat.exists is defined
+  when:  openvpn_enabled and not stat.exists is defined and ansible_distribution != "Debian"
+
+- name:  enable the openvpn tunnel at boot time for Debian
+  shell: update-rc.d openvpn enable
+  when:  openvpn_enabled and not stat.exists is defined and ansible_distribution == "Debian"
 
 - name:  start the openvpn tunnel now
   shell: systemctl start openvpn@xscenet.service
-  when:  openvpn_enabled and not stat.exists is defined
+  when:  openvpn_enabled and not stat.exists is defined and not installing
 
 - name: make openvpn connection automatic
   lineinfile: dest=/etc/crontab
@@ -72,12 +76,16 @@
 
 - name:    stop starting the openvpn tunnel at boot time
   shell:   systemctl disable openvpn@xscenet.service
-  when:    not openvpn_enabled
+  when:    not openvpn_enabled and ansible_distribution != "Debian"
+
+- name:    stop starting the openvpn tunnel at boot time for Debian
+  shell:   update-rc.d openvpn disable
+  when:    not openvpn_enabled and ansible_distribution == "Debian"
 
 - name:    stop  openvpn tunnel immediately
   shell:   systemctl stop openvpn@xscenet.service
   ignore_errors: True
-  when:    not openvpn_enabled
+  when:    not openvpn_enabled and not installing
 
 - name: Add openvpn to service list
   ini_file: dest='{{ service_filelist }}'

@@ -55,6 +55,7 @@
 
 - name: Set XO model and preload
   set_fact:
+    phplib_dir: '{{ ansible_local["local_facts"]["phplib_dir"] }}'
     xo_model: '{{ ansible_local["local_facts"]["xo_model"] }}'
     xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
 
@@ -66,3 +67,21 @@
             owner=root
             group=root
             mode=0755
+
+- name: Install xsce-prep
+  template: src=xsce-prep
+            dest=/usr/sbin
+            owner=root
+            group=root
+            mode=0755
+
+- name: Install xsce-prep.service
+  template: src=xsce-prep.service
+            dest=/etc/systemd/system/
+            owner=root
+            group=root
+            mode=0755
+
+- name: Enable xsce-prep service
+  service: name=xsce-prep
+           enabled=yes

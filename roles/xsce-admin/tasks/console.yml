@@ -21,6 +21,7 @@
     - "{{ admin_console_path }}/css"
     - "{{ admin_console_path }}/help"
     - "{{ admin_console_path }}/js"
+    - "{{ admin_console_path }}/htmlf"
 
 - name: Copy admin-console css files
   copy: src={{ item }}
@@ -49,9 +50,18 @@
   with_fileglob:
         - console/js/*
 
+- name: Copy admin-console html fragment files
+  copy: src={{ item }}
+        dest="{{ admin_console_path }}/htmlf"
+        mode=0644
+        owner=root
+        group=root
+  with_fileglob:
+        - console/htmlf/*
+
 - name: Install admin-console config file
   template: src=console/xs-console.conf.j2
-            dest=/etc/apache2/conf-available/xs-console.conf
+            dest=/etc/apache2/sites-available/xs-console.conf
             owner=root
             group=root
             mode=0644
@@ -80,10 +90,16 @@
             group=root
             mode=0644
 
+- name: Install admin-console server info service
+  template: src=console/server-info.php
+            dest="{{ admin_console_path }}/server-info.php"
+            owner=root
+            group=root
+            mode=0644
+
 - name: Install admin-console app
   copy: src=console/index.html
         dest="{{ admin_console_path }}/index.html"
         owner=root
         group=root
         mode=0644
-

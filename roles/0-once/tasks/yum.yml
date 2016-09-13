@@ -67,7 +67,7 @@
   package: name={{ item }}
            state=latest
   with_items:
-   - network-manager
+#   - network-manager
    - bash
    - iptables
 #   - glibc # CVE-2015-7547
@@ -76,16 +76,16 @@
   tags:
     - download
 
+# instuctions state to start with a fully updated system before starting, stop using
+# ansible as a crutch for developers not following the directions and taking short-cuts
+
+#- name: If version of Network manager has changed, subsequent nmcli commands will fail,restart now
+#  service: name=NetworkManager
+#           state=restarted
+#  when: not installing
+# the above should use a handler - all reboots should wait until all 
+# mods are preformed
+
 - name: Install optional exFAT packages for CentOS
   shell: yum --enablerepo=li-nux-ro install exfat-utils fuse-exfat
   when: exFAT_enabled == "True" and ansible_distribution == "CentOS"
-
-- name: Disable updating ejabberd on CentOS
-  shell: sed -i -e '/^enabled=/a exclude=ejabberd' {{ item }}
-  with_items:
-    - /etc/yum.repos.d/CentOS-Base.repo
-    - /etc/yum.repos.d/CentOS-CR.repo
-    - /etc/yum.repos.d/CentOS-fasttrack.repo
-    - /etc/yum.repos.d/CentOS-Vault.repo
-  when: ansible_distribution == "CentOS"
-

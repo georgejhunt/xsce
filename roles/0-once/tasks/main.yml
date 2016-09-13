@@ -1,23 +1,27 @@
+- name: Set flag for fedora 18
+  set_fact:
+    is_F18: True
+  when: ansible_distribution_release == "based on Fedora 18" or ansible_distribution_version == "18"
+
+- include: selinux.yml
+  when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'
+
 - include: fl.yml
-  tags:
-    - download
-    - download2
-
 - include: prep.yml
-  tags:
-    - download
-
 - include: xsce_ini.yml
-  when: xsce_preload == "False"
-  tags:
-    - download
-
 - name: Keep yum cache
   ini_file: dest=/etc/yum.conf
             section=main
             option=keepcache
             value=1
   when: ansible_distribution != "Debian"
+
+- include: chrony.yml
+- include: prelim.yml
+- include: yum.yml
+# let the cmdsrv.yml in xsce-admin serve
+#- include: cmdsrv.yml
+- include: patch_udev.yml
 
 # Put conditional includes for platforms here
 ##  DISCOVER PLATFORMS ######
@@ -39,8 +43,6 @@
 
 - include: hw_rpi2.yml
   when: rpi_model is defined and rpi_model == "rpi2"
-  tags:
-    - rpi2
 
 - name: Check if the identifier for intel's NUC6 builtin wifi is present
   shell: "lsusb | grep 8087:0a2b | wc |gawk '{print $1}'"
@@ -52,22 +54,8 @@
            url={{ xsce_download_url }}/iwlwifi-8000C-13.ucode
   when:  usb_NUC6.stdout|int > 0
 
-- include: xo.yml
-  when: xo_model != "none" or osbuilder is defined
-  tags:
-    - xo
-
 # need to add proper download section and get the binary out of git
 - name: copy  the firmware for tplink WM752M
   copy: src=rtl8188eufw.bin dest=/lib/firmware/rtlwifi/
   when: wifi_id  ==  "tplink_WM725M" and xo_model == "none" and not rpi_model is defined
   ignore_errors: true
-
-- include: centos.yml
-  when: ansible_distribution == "CentOS"
-  tags:
-    - centos
-    - download
-
-- include: selinux.yml
-  when: ansible_version >= '2' and ansible_selinux or ansible_version < '2' and ansible_selinux['status'] != 'disabled'

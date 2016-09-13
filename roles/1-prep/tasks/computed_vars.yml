@@ -37,6 +37,8 @@
       value: '{{ ansible_local["local_facts"]["xsce_branch"] }}'
     - option: 'runtime_commit'
       value: '{{ ansible_local["local_facts"]["xsce_commit"] }}'
+    - option: 'xsce_uuid'
+      value: '{{ ansible_local["local_facts"]["xsce_uuid"] }}'
     - option: 'runtime_date'
       value: '{{ ansible_date_time["iso8601"] }}'
     - option: 'runtime_php'
@@ -45,6 +47,16 @@
       value: '{{ xsce_preload }}'
     - option: 'runtime_base_ver'
       value: '{{ xsce_base_ver }}'
+    - option: 'kernel'
+      value: '{{ ansible_kernel }}'
+    - option: 'memory_mb'
+      value: '{{ ansible_memtotal_mb }}'
+    - option: 'swap_mb'
+      value: '{{ ansible_swaptotal_mb }}'
+    - option: 'machine_id'
+      value: '{{ ansible_machine_id }}'
+    - option: 'product_id'
+      value: '{{ ansible_product_uuid }}'
 
 # Put all computed vars here so derive properly from any prior var file
 - name: Set port 80 for Admin Console
@@ -76,25 +88,11 @@
     postgresql_enabled: True
   when: moodle_enabled or pathagar_enabled
 
-- name: Turn on docker if schooltool is enabled
+- name: Turn on docker if schooltool is to be installed
   set_fact:
     docker_install: True
     docker_enabled: True
-  when: schooltool_enabled
-
-# Patch Fedora 21+ so usbmount works
-# Set flag to True that was initialized to False in role defaults
-# We can't undo this
-- name: Does udev need patching
-  set_fact:
-    udev_needs_patch: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version >= "21"
-
-# Same patch for CentOS 7.2
-- name: Does udev need patching for Centos
-  set_fact:
-    udev_needs_patch: True
-  when: ansible_distribution == "CentOS" and ansible_distribution_version >= "7.2.1511"
+  when: schooltool_enabled or schooltool_install
 
 # for various reasons the mysql service can not be enabled on fedora 20,
 # but 'mariadb', which is its real name can
@@ -135,6 +133,16 @@
   set_fact:
     is_F23: True
   when: ansible_distribution == "Fedora" and ansible_distribution_version == "23"
+
+- name: Fedora 24
+  set_fact:
+    is_F24: True
+  when: ansible_distribution == "Fedora" and ansible_distribution_version == "24"
+
+- name: CentOS
+  set_fact:
+    is_CentOS: True
+  when: ansible_distribution == "CentOS"
 
 - name: Set kiwix source file name i686
   set_fact:

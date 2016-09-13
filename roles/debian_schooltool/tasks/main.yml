@@ -15,6 +15,10 @@
   when: debian_schooltool_install
   tags:
     - download
+
+- name: Create the font directory
+  file: path=/usr/share/fonts/truetype/ttf-ubuntu
+        state=directory
   
 - name: get the ttf-ubuntu-font-family
   get_url: url={{ xsce_download_url }}/ubuntu-font-family-0.83.zip
@@ -40,5 +44,5 @@
         state=link
 
 - name: build the schooltool from source
-  shell: command='cd {{ xsce_base }}/schooltool; make '
+  shell: command='$( cd {{ xsce_base }}/schooltool; /usr/bin/make ) '
 

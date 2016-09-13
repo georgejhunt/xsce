@@ -36,6 +36,7 @@
 
 - name: re-Install packages
   shell: yum -y reinstall sed libidn grep which util-linux wget gnupg2 groff gnash yum
+  when: not osbuilder is defined
 
 - name: Configure networkmanager plugin
   ini_file: dest=/etc/NetworkManager/NetworkManager.conf
@@ -95,7 +96,7 @@
   lineinfile: backup=yes
               dest=/etc/fstab
               regexp='^/tmp*'
-              line='/tmp            /tmp            tmpfs         rw,size=200m 0 0'
+              line='/tmp            /tmp            tmpfs         rw,size=600m 0 0'
 
 - name: Disable graphical login
   file: path=/etc/systemd/system/default.target
