@@ -28,19 +28,19 @@
 
 - name: Give apache permission to write moodle directory (config file)
   file: path={{ moodle_base }}
-        group=www-data
+        group={{ apache_user }}
         mode=0775
         state=directory
 
 - name: Give apache permission to write moodle data directory
   file: path={{ content_base }}/dbdata/moodle
-        owner=www-data
+        owner={{ apache_user }}
         mode=0775
         state=directory
 
 - name: Create a moodle data dir with apache permission to write 
   file: path={{ moodle_data }}
-        owner=www-data
+        owner={{ apache_user }}
         group=apache
         mode=0770
         state=directory
@@ -88,7 +88,7 @@
   postgresql_db: name=moodle
                  encoding=utf8
                  owner=Admin
-                 template=template0
+                 template=template1
                  state=present
   become: yes
   become_user: postgres
@@ -116,7 +116,7 @@
   
 - name: Give apache permission to read config file
   file: path={{ moodle_base }}/config.php
-        group=apache
+        group={{ apache_user }}
         mode=0640
         state=file
   when: moodle_enabled

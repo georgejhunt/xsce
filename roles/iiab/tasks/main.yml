@@ -118,8 +118,8 @@
 - name: Create the knowledge data set folders
   file: path=/library/knowledge/modules
         state=directory
-        owner=www-data
-        group=www-data
+        owner={{ apache_user }}
+        group={{ apache_user }}
 
 - name: copy the default.ini with our location of /library/knowledge
   template: src=defaults.ini

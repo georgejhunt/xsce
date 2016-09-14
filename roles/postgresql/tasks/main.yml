@@ -8,8 +8,7 @@
     - download
 
 - name: Create postgresql-xs systemd service
-  template: backup=yes
-            src=postgresql-xs.service
+  template: src=postgresql-xs.service
             dest=/etc/systemd/system/postgresql-xs.service
             owner=root
             group=root
@@ -24,22 +23,17 @@
 
 - name: make sure that the en_US locale is enabled
   lineinfile: dest=/etc/locale.gen
-              regexp='^# en_US.UTF8'
-              line='en_US.UTF8 UTF8'
+              line={{ postgresql_locale }}
   when: ansible_distribution == "Debian"
 
 - name: generate the selected locales
   command: /usr/sbin/locale-gen
   when: ansible_distribution == "Debian"
 
-- name: Discover if the postgresql database data directory has already been created
-  stat: path="/library/pgsql-xs/base"
-  register: p
-   
 - name: Initialize the postgres db
-  command:  su - postgres -c "/usr/lib/postgresql/9.4/bin/initdb -E 'UTF-8' --lc-collate='en_US.UTF-8' --lc-ctype='en_US.UTF-8' -D /library/pgsql-xs"
+  command:  su - postgres -c "/usr/lib/postgresql/9.4/bin/initdb -E 'UTF-8' --locale={{ postgresql_locale }}  -D /library/pgsql-xs"
+
             creates=/library/pgsql-xs/pg_hba.conf
-  when: p.stat.exists is defined and not p.stat.exists
 
 - name: Configure postgres 
   template: backup=yes

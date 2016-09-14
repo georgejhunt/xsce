@@ -16,8 +16,8 @@
 - name: Create directory for awstat to use as intermediate summary storage
   file: path={{ item }}
         mode=0755
-        owner=www-data
-        group=www-data
+        owner={{ apache_user }}
+        group={{ apache_user }}
         state=directory
   with_items:
     - "{{ awstats_data_dir }}"
