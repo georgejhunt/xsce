@@ -2,7 +2,7 @@ Alias /munin /var/cache/munin/www
 <Directory /var/cache/munin/www>
 #       Require local
         Require all granted
-        Option FollowSymLinksIfOwnerMatch
+        Options FollowSymLinks SymLinksIfOwnerMatch
         Options None
 </Directory>
 
