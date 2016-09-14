@@ -8,9 +8,9 @@
   tags:
     - download
 
-- name: see if moodle is already downloaded
+- name: Determine if moodle is already downloaded
   stat: path={{ moodle_base }}/config-dist.php
-  register: config_file
+  register: moodle
 
 - debug: var=config_file
 - debug: var=no_network
@@ -22,7 +22,7 @@
        force=yes
        version="MOODLE_{{ moodle_version }}_STABLE"
 #  ignore_errors: yes
-  when: not {{ use_cache }} and not {{ no_network }} and config_file.stat.exists is defined and not config_file.stat.exists
+  when: not {{ use_cache }} and not {{ no_network }} and moodle.stat.exists is defined and not moodle.stat.exists
   tags:
     - download2
 

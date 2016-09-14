@@ -1158,7 +1158,29 @@ def install_rachel(cmd_info):
     return resp
 
 def restart_kiwix(cmd_info):
-    rc = subprocess.call(["/usr/bin/systemctl", "restart", "kiwix-serve.service"])
+    rc = subprocess.call(["/usr/bin/xsce-make-kiwix-lib"])
+    #print rc
+    if rc == 0:
+        resp = cmd_success(cmd_info['cmd'])
+    else:
+        resp = cmd_error(cmd_info['cmd'])
+    return (resp)
+
+def start_vnc(cmd_info):
+    if "cmd_args" in cmd_info.keys() and "REMOTE_ADDR" in cmd_info["cmd_args"].keys():
+        remote_addr =  cmd_info["cmd_args"]["REMOTE_ADDR"]
+        rc = subprocess.call(["scripts/display-desktop.sh", remote_addr])
+    else:
+        rc = subprocess.call(["scripts/display-desktop.sh"])
+    #print rc
+    if rc == 0:
+        resp = cmd_success(cmd_info['cmd'])
+    else:
+        resp = cmd_error(cmd_info['cmd'])
+    return (resp)
+
+def stop_vnc(cmd_info):
+    rc = subprocess.call(["scripts/secure-desktop.sh"])
     #print rc
     if rc == 0:
         resp = cmd_success(cmd_info['cmd'])
