@@ -981,7 +981,7 @@ def run_ansible(cmd_info): # create multiple jobs to run in succession
 
         if 'cmd_args' in cmd_info.keys() and 'tags' in cmd_info['cmd_args'].keys():
             tags = cmd_info['cmd_args']['tags']
-            if tags != "ALL-TAGS":
+            if tags == "ALL-TAGS":
                 job_command += ' --tags="' +  tags +'"'
             else:
                 return cmd_malformed(cmd_info['cmd'])
