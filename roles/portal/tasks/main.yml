@@ -41,3 +41,5 @@
       - xsce-home-page.conf
   notify: restart apache
 
+- name: enable mod_rewrite
+  apache2_module: name=rewrite

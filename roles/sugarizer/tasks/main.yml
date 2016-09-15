@@ -40,10 +40,10 @@
      - headers
      - rewrite
 
-- name: Create the symlink enabling the rewrite
-  file: src=/etc/apache2/sites-available/sugarizer.conf
-        dest=/etc/apache2/sites-enabled/sugarizer.conf
-        state=link
+#- name: Create the symlink enabling the rewrite
+#  file: src=/etc/apache2/sites-available/sugarizer.conf
+#        dest=/etc/apache2/sites-enabled/sugarizer.conf
+#        state=link
 
 - name: Create the express framework for node.js
   shell:  npm install
