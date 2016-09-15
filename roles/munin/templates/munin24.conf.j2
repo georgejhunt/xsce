@@ -2,7 +2,7 @@ Alias /munin /var/cache/munin/www
 <Directory /var/cache/munin/www>
 #       Require local
         Require all granted
-        Option FollowSymLinksIfOwnerMatch
+        Options FollowSymLinksi SymLinksIfOwnerMatch
         Options None
 </Directory>
 
@@ -10,7 +10,7 @@ ScriptAlias /munin-cgi/munin-cgi-graph /usr/lib/munin/cgi/munin-cgi-graph
 <Location /munin-cgi/munin-cgi-graph>
 #       Require local
         Require all granted
-        Option FollowSymLinksIfOwnerMatch
+        Options FollowSymLinksi SymLinksIfOwnerMatch
 	<IfModule mod_fcgid.c>
 	    SetHandler fcgid-script
 	</IfModule>

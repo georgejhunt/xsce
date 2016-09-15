@@ -21,12 +21,7 @@ iface br0 inet static
 {% endif %}
 
 auto {{ discovered_wan_iface }}
-iface {{discovered_wan_iface }} inet manual
-   pre-up   ifconfig $IFACE up
-   pre-down ifconfig $IFACE down
-{% if openvpn_enabled %}
-   post-up /usr/lib/xsce/up_wan
-{% endif %}
+iface {{discovered_wan_iface }} inet dhcp
 
 auto {{ discovered_wireless_iface }}
 iface {{discovered_wireless_iface }} inet manual
