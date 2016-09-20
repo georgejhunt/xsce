@@ -16,6 +16,7 @@
 - debug: var=gui_static_wan_ip
 - debug: var=hostapd_enabled
 - debug: var=discovered_wireless_iface
+- debug: var=gui_static_wan
 
 - name: default to lan controller
   set_fact:
