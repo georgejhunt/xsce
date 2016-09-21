@@ -38,6 +38,7 @@ iface {{ discovered_wan_iface }} inet static
 
 #################   LANCONTROLLER   ###################
 auto br0
+iface br0 inet static
     bridge_ports {{ discovered_wan_iface }} {{ discovered_wireless_iface }}
     address {{ lan_ip }}
     netmask {{ lan_netmask }}
