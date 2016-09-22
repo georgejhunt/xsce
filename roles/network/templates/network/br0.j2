@@ -24,7 +24,12 @@ auto {{ discovered_wan_iface }}
 {% elif gui_desired_network_role == "Gateway"  %}
 #################   GATEWAY   #########################
 auto br0
+iface br0 inet static
     bridge_ports {{ discovered_wireless_iface }} 
+    address {{ lan_ip }}
+    netmask {{ lan_netmask }}
+    dns-nameservers {{ lan_ip }}
+auto {{ discovered_wan_iface }}
 {% if gui_static_wan == false %}
 iface {{ discovered_wan_iface }} inet dhcp
 {% else %} # gui_static_wan_ip is set 

@@ -12,6 +12,9 @@
     - enscript
     - python-virtualenv 
     - ttf-liberation
+    - redis-server
+    - lib-jpeg-dev
+    - xvfb
   when: debian_schooltool_install
   tags:
     - download
