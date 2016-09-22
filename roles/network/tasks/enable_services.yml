@@ -76,7 +76,7 @@
 - name: point to Squid config file from startup file
   lineinfile: regexp='^CONFIG'
               line='CONFIG=/etc/squid3/squid-xs.conf'
-              file=/etc/init.d/squid3
+              dest=/etc/init.d/squid3
   when: squid_enabled
 
 - name: Disable squid service
