@@ -10,13 +10,14 @@ if [[ $1 == "enable" ]]; then
 	if [ ! -d $SQUID_CACHEDIR ]; then
 	    mkdir $SQUID_CACHEDIR
     	chown $SQUID_USER $SQUID_CACHEDIR
-	    /usr/sbin/squid -f /etc/squid/squid-xs.conf -z
+	    /usr/sbin/squid3 -f /etc/squid/squid-xs.conf -z
 	fi
 
 	#  Turn squid on after the next reboot
-	/sbin/chkconfig --levels 345 squid on
+	#/sbin/chkconfig --levels 345 squid on
+   systemctl enable squid3.service
 	#  Turn squid on now
-	/sbin/service squid start
+	/sbin/service squid3 start
 
 	# Now, copy in a set of iptables that redirects forwarded traffic
 	# to port 80 to port 3128 on this machine
@@ -32,7 +33,8 @@ elif [[ $1 == "disable" ]]; then
 	# Turn it off now
 	/sbin/service squid stop
 	# Turn it off after the next reboot
-	/sbin/chkconfig squid off
+	#/sbin/chkconfig squid off
+   systemctl disable squid3.service
 else
 	echo "Unrecognised argument: $1" >&2
 	exit 1
