@@ -13,7 +13,7 @@
     - python-virtualenv 
     - ttf-liberation
     - redis-server
-    - lib-jpeg-dev
+    - libjpeg-dev
     - xvfb
   when: debian_schooltool_install
   tags:

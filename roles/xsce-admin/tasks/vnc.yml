@@ -47,6 +47,13 @@
      - { src: 'cmdsrv/vnc', dest: '/etc/init.d/' }
      - { src: 'cmdsrv/websockify.service', dest: '/etc/systemd/system/' }
 
+- name: Replicate the LXDE config files into xsce-admin
+  copy: src=/home/pi/.config
+        dest=/home/xsce-admin/.config
+        owner=xsce-admin
+        remote_src=true
+        force=true
+
 - name: copy the password file -- binary confuses template module
   copy: src=cmdsrv/passwd
         dest=/home/xsce-admin/.vnc
