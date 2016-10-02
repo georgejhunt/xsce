@@ -23,7 +23,7 @@
 
 - name: make sure that the en_US locale is enabled
   lineinfile: dest=/etc/locale.gen
-              line={{ postgresql_locale }}
+              line="{{ postgresql_locale }} UTF-8"
   when: ansible_distribution == "Debian"
 
 - name: generate the selected locales
