@@ -47,12 +47,15 @@
      - { src: 'cmdsrv/vnc', dest: '/etc/init.d/' }
      - { src: 'cmdsrv/websockify.service', dest: '/etc/systemd/system/' }
 
-- name: Replicate the LXDE config files into xsce-admin
-  copy: src=/home/pi/.config
-        dest=/home/xsce-admin/.config
-        owner=xsce-admin
-        remote_src=true
-        force=true
+- name: Retrieve the LXDE config files into downloads
+  get_url: url={{ xsce_download_url }}/lxde_rpi3_raspbian.tgz
+           dest={{ downloads_dir }}
+  tags: download2
+
+- name: Put the lxde config files in place
+  unarchive: src={{ downloads_dir }}/lxde_rpi3_raspbian.tgz
+             dest=/home/xsce-admin/
+             owner=xsce-admin
 
 - name: copy the password file -- binary confuses template module
   copy: src=cmdsrv/passwd

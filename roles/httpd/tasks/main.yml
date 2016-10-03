@@ -28,7 +28,6 @@
       - mpm_event.conf
       - mpm_event.load
 
-
 - name: create symlinks for mpm-prefork
   file: path=/etc/apache2/mods-enabled/{{ item }}
         src=/etc/apache2/mods-available/{{ item }}
@@ -36,6 +35,17 @@
   with_items:
       - mpm_prefork.conf
       - mpm_prefork.load
+
+- name: create symlinks for enabling our site
+  file: path=/etc/apache2/mods-enabled/{{ item }}
+        src=/etc/apache2/mods-available/{{ item }}
+        state=link
+  with_items:
+      - 010-xsce.conf
+
+- name: Remove the default site container
+  file: dest=/etc/apache2/000-default.conf
+        state=absent
 
 - name: Create http pid dir
   file: path=/var/run/apache2
