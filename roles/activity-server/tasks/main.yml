@@ -76,7 +76,13 @@
             owner=root
             group=root
             mode=0644
+  when: xo_services_enabled
 
+- name: Remove the httpd connection
+  file: path=/etc/httpd/conf.d/xs-activity-server.conf
+        state=absent
+  when: not xo_services_enabled
+ 
 - name: Copy xs-activity-server usbmount file
   template: src=usbmount-60-xs-activity-server-installcontent
         dest=/etc/usbmount/mount.d/

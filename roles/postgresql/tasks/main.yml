@@ -49,6 +49,12 @@
            enabled=yes
   when: postgresql_enabled
 
+- name: Disable postgresql service
+  service: name=postgresql-xs
+           enabled=no   
+           state=stopped
+  when: not postgresql_enabled
+
 - name: Add postgresql to service list
   ini_file: dest='{{ service_filelist }}'
             section=postgresql

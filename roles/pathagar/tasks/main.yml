@@ -156,9 +156,14 @@
 
 - name: Install httpd conf for pathagar
   template: src=pathagar.conf
-            backup=yes
             dest=/etc/httpd/conf.d/pathagar.conf
             mode=0644
+  when: pathagar_enabled
+
+- name: Remove httpd conf for pathagar
+  file: path=dest=/etc/httpd/conf.d/pathagar.conf
+        state=absent
+  when: not pathagar_enabled
 
 - name: Restart http
   service: name=httpd

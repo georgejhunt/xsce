@@ -17,8 +17,8 @@
 
 - name: Create admin user
   htpasswd: path=/etc/munin/munin-htpasswd
-            name=admin
-            password=munindxs
+            name=Admin
+            password=changeme
             create=yes
             state=present
 
@@ -30,6 +30,11 @@
 - name: Disable munin-node service when it becomes disabled
   service: name=munin-node
            enabled=no
+  when: not munin_enabled
+
+- name: Remove the httpd connection when it is disabled
+  file: path=/etc/httpd/conf.d/munin.conf
+        state=absent
   when: not munin_enabled
 
 - name: Add munin to service list

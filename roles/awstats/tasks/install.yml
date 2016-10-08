@@ -25,6 +25,11 @@
             mode=0644
   when: awstats_enabled
 
+- name: Remove the Apache config for Advanced Web Statistics 
+  file: path=/etc/httpd/conf.d/awstats.conf
+            state=absent
+  when: not awstats_enabled
+
 - name: Install the awstats config for Advanced Web Statistics 
   template: src=awstats.schoolserver.conf.j2
             dest=/etc/awstats/awstats.schoolserver.conf

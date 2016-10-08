@@ -38,19 +38,25 @@
         owner=root
         group=root
         state=link
+  when: xo_services_enabled
+
+- name: Disable ejabberd service
+  file: path=/etc/systemd/system/multi-user.target.wants/ejabberd-xs.service
+        state=absent
+  when: not xo_services_enabled
 
 - name: Start ejabberd service
   service: name=ejabberd-xs
            state=restarted
            enabled=yes
-  when: ejabberd_config.changed
+  when: ejabberd_config.changed and xo_services_enabled
 
 - name: Wait for ejabberd service start
   wait_for: port=5280
             delay=15
             state=started
             timeout=300
-  when: ejabberd_config.changed
+  when: ejabberd_config.changed and xo_services_enabled
 
 - name: Create online group
   shell: ejabberdctl srg_create Online "schoolserver" Online "Online_Users" Online

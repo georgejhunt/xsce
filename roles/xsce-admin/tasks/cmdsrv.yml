@@ -31,8 +31,7 @@
         state=link
 
 - name: Create cmdsrv.conf file
-  template: backup=yes
-            src=cmdsrv/cmdsrv.conf.j2
+  template: src=cmdsrv/cmdsrv.conf.j2
             dest=/etc/xsce/cmdsrv.conf
             owner=root
             group=root
@@ -41,8 +40,7 @@
 # Create xsce-cmdsrv service
 
 - name: Create xsce-cmdsrv service
-  template: backup=yes
-            src={{ item.src }}
+  template: src={{ item.src }}
             dest={{ item.dest }}
             owner=root
             group=root
