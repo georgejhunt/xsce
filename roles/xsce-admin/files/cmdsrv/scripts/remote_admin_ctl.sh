@@ -26,7 +26,7 @@ if [ "$1" == "True" ]; then
 else
   sed -i -e 's/^REMOTE_ADMIN_ALLOWED.*/REMOTE_ADMIN_ALLOWED=False/' /etc/xsce/xsce.env
 # for demo of this GUI over the vpn, don't stop the service
-#  systemctl stop openvpn@xscenet.service
+  systemctl stop openvpn@xscenet.service
   systemctl disable openvpn@xscenet.service
   systemctl stop teamviewer
   systemctl disable teamviewer
