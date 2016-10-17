@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash 
 # return the state of remote_admin_allowed, teamviewer_enabled, openvpn_enabled and handle
 
 if [ ! -f /etc/xsce/xsce.env ]; then

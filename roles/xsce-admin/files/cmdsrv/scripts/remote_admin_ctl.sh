@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash 
 # create an override which enables/disables remote admin, attach to button
 
 # error if no control parameter
