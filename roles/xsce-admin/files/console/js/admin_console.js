@@ -1567,9 +1567,11 @@ function remoteSetButton(enabled)
   if ( enabled == "True" ){
     $("#R-LABEL").html("DISABLE Remote Access");
     $("#REMOTE").prop("class", "btn btn-lg btn-success");
+    $("#R-LABEL").prop("class", "btn btn-lg btn-success");
   } else {
     $("#R-LABEL").html("ENABLE Remote Access");
     $("#REMOTE").prop("class","btn btn-lg btn-danger");
+    $("#R-LABEL").prop("class", "btn btn-lg btn-danger");
   }
 }
 
