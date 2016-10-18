@@ -1,5 +1,9 @@
-#!/bin/bash 
+#!/bin/bash -x
 # create an override which enables/disables remote admin, attach to button
+
+# get the information about whether openvpn or teamviewer are enabled
+curdir=$(dirname $0)
+source $curdir/status.inc
 
 # error if no control parameter
 if [ $# -ne 1 ]; then
@@ -14,7 +18,7 @@ if [ "$1" == "True" ]; then
   fi
   sed -i -e 's/^REMOTE_ADMIN_ALLOWED.*/REMOTE_ADMIN_ALLOWED=True/' /etc/xsce/xsce.env
   if [ "$openvpn_enabled" == "True" ];then
-     if [ -f /etc/openvpn/xsce-vpn.conf ]; then
+     if [ ! -f /etc/openvpn/xsce-vpn.conf ]; then
         systemctl enable openvpn@xscenet
         systemctl start openvpn@xscenet
      fi
