@@ -2,7 +2,8 @@
   command: echo Server Options Installed
 
 - name: Stop postgresql service
-  command: service postgresql stop
+  service: name=postgresql-xs
+           state=stopped
   when: postgresql_install
 
 - name: Start postgresql service

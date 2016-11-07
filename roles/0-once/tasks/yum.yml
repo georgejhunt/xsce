@@ -10,19 +10,8 @@
   shell: dnf install -y yum
   when: ansible_distribution == "Fedora" and ansible_distribution_version|int >= 22 and ansible_machine != "armv7l"
 
-- name: Install yum packages
-  package: name={{ item }}
-           state=present
-  with_items:
-   - yum-utils
-   - createrepo
-  when: ansible_distribution != "Debian"
-  tags:
-    - download
-
 - name: Create local yum repo
   shell: createrepo {{ yum_packages_dir }}
-  when: ansible_distribution != "Debian"
 
 - name: Install local repo file.
   template: dest=/etc/yum.repos.d/xsce-local.repo
@@ -30,6 +19,30 @@
             owner=root
             mode=0644
   when: ansible_distribution != "Debian"
+
+- name: Install yum packages
+  package: name={{ item }}
+           state=present
+  with_items:
+   - yum-utils
+   - createrepo
+   - wpa_supplicant
+   - linux-firmware
+   - syslog
+   - xml-common
+  when: ansible_distribution != "Debian"
+  tags:
+    - download
+
+- name: Install yum packages for Debian
+  package: name={{ item }}
+           state=present
+  with_items:
+    - inetutils-syslogd
+    - wpasupplicand
+  when: ansible_distribution == "Debian"
+  tags:
+    - download
 
 - name: Install common packages
   package: name={{ item }}
@@ -47,7 +60,6 @@
    - sudo
    - inetutils-syslogd
    - logrotate
-#   - xml-common
    - make
    - tar
    - unzip
@@ -59,7 +71,16 @@
    - wpasupplicant
    - wget
    - openssl   #FC 18 does not supply, but pear requires
-#   - linux-firmware # grab wifi firmware--Debian installs non-free automatically
+  tags:
+    - download
+
+- name: Update common packages (not debian
+  package: name={{ item }}
+           state=latest
+  with_items:
+   - network-manager
+   - glibc # CVE-2015-7547
+  when: ansible_distribution != "Debian"
   tags:
     - download
 
@@ -67,10 +88,8 @@
   package: name={{ item }}
            state=latest
   with_items:
-#   - network-manager
    - bash
    - iptables
-#   - glibc # CVE-2015-7547
    - libc-bin
    - libc6
   tags:

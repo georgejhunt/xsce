@@ -1,4 +1,4 @@
-    - name: Install MySQL
+    - name: Install MySQL Debian
       package: name={{ item }}
                state=present
       with_items:
@@ -12,6 +12,26 @@
         - php5-odbc
         - php-xml-parser
         - php5-xmlrpc
+      when: is_debian
+      tags:
+        - download
+
+    - name: Install MySQL 
+      package: name={{ item }}
+               state=present
+      with_items:
+        - MySQL-python
+        - mysql
+        - php
+        - php-mysql
+        - php-pear
+        - php-gd
+        - php-imap
+        - php-ldap
+        - php-odbc
+        - php-xml
+        - php-xmlrpc
+      when: not is_debian
       tags:
         - download
 

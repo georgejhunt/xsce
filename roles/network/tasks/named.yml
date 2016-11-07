@@ -4,6 +4,7 @@
   with_items:
    - bind9
    - bind9utils
+  when: is_debian
   tags:
     - download
 
