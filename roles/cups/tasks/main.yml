@@ -13,14 +13,14 @@
             src=cupsd.conf
 
 - name: Put an apache2 config file in place
-  template: dest=/etc/apache2/sites-available/
+  template: dest=/etc/{{ apache_config_dir }}/
             src=cups.conf
 
 - name: Create the link for sites-enabled
   file: src=/etc/apache2/sites-available/cups.conf
         dest=/etc/apache2/sites-enabled/cups.conf
         state=link
-  when: cups_enabled
+  when: cups_enabled and is_debian
 
 - name: Enable services for cups
   service: name={{ item }}

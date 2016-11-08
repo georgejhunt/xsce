@@ -1,0 +1,6 @@
+dns_service: named
+dns_user: named
+proxy: squid
+apache_service: apache
+apache_config_dir: apache/config.d
+apache_data: apache

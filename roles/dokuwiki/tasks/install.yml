@@ -23,7 +23,7 @@
 - name: disable the dokuwiki
   file: path=/etc/apache2/sites-enabled/dokuwiki.conf
         state=absent
-  when: not dokuwiki_enabled
+  when: not dokuwiki_enabled and is_debian
 
 
 - name: Change permissions on engine directory so apache can write

@@ -65,6 +65,7 @@
     - network
 
 - include: squid.yml
+  when: not xsce_prepped
   tags:
     - squid
     - network
@@ -76,6 +77,7 @@
     - network
 
 - include: iptables.yml
+  when: not xsce_prepped
   tags:
     - iptables
     - network

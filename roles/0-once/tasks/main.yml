@@ -30,6 +30,8 @@
 # let the cmdsrv.yml in xsce-admin serve
 #- include: cmdsrv.yml
 - include: patch_udev.yml
+- include net_mods.yml
+  when: not is_debian
 
 - name: Keep yum cache
   ini_file: dest=/etc/yum.conf

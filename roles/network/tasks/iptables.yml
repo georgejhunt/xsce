@@ -29,6 +29,14 @@
 - name: Install iptables service package
   package: name=iptables-persistent
            state=present
+  when: is_debian
+  tags:
+    - download
+
+- name: Install iptables service package
+  package: name=iptables-services
+           state=present
+  when: not is_debian
   tags:
     - download
 

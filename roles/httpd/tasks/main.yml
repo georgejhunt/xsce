@@ -54,10 +54,12 @@
         state=link
   with_items:
       - 010-xsce.conf
+  when: is_debian
 
 - name: Remove the default site container
   file: dest=/etc/apache2/000-default.conf
         state=absent
+  when: is_debian
 
 - name: Create http pid dir
   file: path=/var/run/{{ apache_user }}
