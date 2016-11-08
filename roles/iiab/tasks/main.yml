@@ -8,6 +8,21 @@
     - liblzma-dev
     - libapache2-mod-wsgi
     - libapache2-mod-xsendfile
+  when; is_debian
+  tags:
+    - download
+
+- name: Install IIAB required packages
+  package: name={{ item }}
+           state=present
+  with_items:
+    - python-pip
+    - gcc
+    - python-devel
+    - xz-devel
+    - mod_wsgi
+    - mod-xsendfile
+  when; not is_debian
   tags:
     - download
 
@@ -88,7 +103,7 @@
 - name: Copy IIAB config file
   template: backup=yes
             src=iiab.conf.j2
-            dest=/etc/{{apache_config_dir}}/iiab.conf
+            dest=/etc/{{ apache_config_dir }}/iiab.conf
             owner=root
             group=root
             mode=0644
@@ -121,7 +136,7 @@
   when: is_debian
 
 - name: Restart httpd service
-  service: name={{apache_service}}
+  service: name={{ apache_service }}
            state=restarted
 
 - name: Create the knowledge data set folders

@@ -74,7 +74,7 @@
   when: mysql_enabled and owncloud_enabled
 
 - name: Restart apache, so it picks up the new aliases
-  service: name=apache2 state=restarted
+  service: name={{ apache_service }} state=restarted
   when: not owncloud_enabled
 
 # Enable owncloud by copying template to httpd config

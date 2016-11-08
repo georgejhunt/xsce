@@ -68,22 +68,22 @@
 
 - name: Copy WordPress httpd conf file
   template: src=wordpress.conf.j2
-            dest=/etc/apache2/sites-available/wordpress.conf
+            dest=/etc/{{ apache_config_dir }}/wordpress.conf
 
 - name: Enable httpd conf file if we are disabled
   file: path=/etc/apache2/sites-enabled/wordpress.conf
         src=/etc/apache2/sites-available/wordpress.conf
         state=link
-  when: wordpress_enabled
+  when: wordpress_enabled and is_debian
 
 
 - name: Remove httpd conf file if we are disabled
   file: path=/etc/apache2/sites-enabled/wordpress.conf
         state=absent
-  when: not wordpress_enabled
+  when: not wordpress_enabled and is_debian
 
 - name: Restart apache, so it picks up the new aliases
-  service: name=apache2 state=restarted
+  service: name={{ apache_service }} state=restarted
 
 - name: Add wordpress to service list
   ini_file: dest='{{ service_filelist }}'

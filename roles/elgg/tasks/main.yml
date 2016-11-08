@@ -83,7 +83,7 @@
             owner={{ apache_user }}
 
 - name: Install config file for elgg in Apache
-  template: src=elgg.conf dest=/etc/{{apache_config_dif}}/elgg.conf
+  template: src=elgg.conf dest=/etc/{{ apache_config_dir }}/elgg.conf
   when: mysql_enabled and elgg_enabled
 
 - name: enable elgg
@@ -119,5 +119,5 @@
       value: "{{ elgg_enabled }}"
 
 - name: Restart apache, so it picks up the new aliases
-  service: name={{apache_service}} state=restarted
+  service: name={{ apache_service }} state=restarted
 

@@ -42,6 +42,14 @@
     - { src: 'xs-handle', dest: '/usr/bin/xs-handle', owner: "root" , mode: '0755' }
     - { src: 'up_wan', dest: '/usr/lib/xsce/up_wan', owner: "root" , mode: '0755' }
 
+- name: put up_wan in place for debian
+  template: src=up_wan dest=/usr/lib/xsce/up_wan
+  when: is_debian
+
+- name: put dispatcher up for NM
+  template: src=15-openvpn dest=/etc/NetworkManagerdispatcher.d/
+  when: not is_debian
+
 - name: check for manually configured openvpn tunnel
   stat: path=/etc/openvpn/xsce-vpn.conf
   register: stat
@@ -49,11 +57,11 @@
 # note that ansible does not currently handle @ in a service name
 - name:  enable the openvpn tunnel at boot time
   shell: systemctl enable openvpn@xscenet.service
-  when:  openvpn_enabled and not stat.exists is defined and ansible_distribution != "Debian"
+  when:  openvpn_enabled and not stat.exists is defined and is_debian
 
 - name:  enable the openvpn tunnel at boot time for Debian
   shell: update-rc.d openvpn enable
-  when:  openvpn_enabled and not stat.exists is defined and ansible_distribution == "Debian"
+  when:  openvpn_enabled and not stat.exists is defined and is_debian
 
 - name:  start the openvpn tunnel now
   shell: systemctl start openvpn@xscenet.service
@@ -75,11 +83,11 @@
 
 - name:    stop starting the openvpn tunnel at boot time
   shell:   systemctl disable openvpn@xscenet.service
-  when:    not openvpn_enabled and ansible_distribution != "Debian"
+  when:    not openvpn_enabled and not is_debian
 
 - name:    stop starting the openvpn tunnel at boot time for Debian
   shell:   update-rc.d openvpn disable
-  when:    not openvpn_enabled and ansible_distribution == "Debian"
+  when:    not openvpn_enabled and is_debian
 
 - name:    stop  openvpn tunnel immediately
   shell:   systemctl stop openvpn@xscenet.service

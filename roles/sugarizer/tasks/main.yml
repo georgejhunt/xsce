@@ -39,6 +39,7 @@
      - proxy_html
      - headers
      - rewrite
+  when: is_debian
 
 #- name: Create the symlink enabling the rewrite
 #  file: src=/etc/apache2/sites-available/sugarizer.conf

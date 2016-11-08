@@ -2,14 +2,14 @@
   package: name={{ item }}
            state=present
   with_items:
-    - squid3
+    - {{ proxy }}
     - cadaver
     - dansguardian
   tags:
     - download
 
 - name: Create the squid user
-  user: name=squid
+  user: name={{ proxy_user }}
         createhome=False
         shell=/bin/false
 
@@ -27,23 +27,23 @@
       mode: '0755'
     - src: 'squid/sites.whitelist.txt'
       dest: '/etc/squid3/sites.whitelist.txt'
-      owner: 'proxy'
-      group: 'proxy'
+      owner: '{{ proxy_user }}'
+      group: '{{ proxy_user }}'
       mode: '0644'
     - src: 'squid/allowregex.rules'
       dest: '/etc/squid3/allowregex.rules'
-      owner: 'proxy'
-      group: 'proxy'
+      owner: '{{ proxy_user }}'
+      group: '{{ proxy_user }}'
       mode: '0644'
     - src: 'squid/denyregex.rules'
       dest: '/etc/squid3/denyregex.rules'
-      owner: 'proxy'
-      group: 'proxy'
+      owner: '{{ proxy_user }}'
+      group: '{{ proxy_user }}'
       mode: '0644'
     - src: 'squid/dstaddress.rules'
       dest: '/etc/squid3/dstaddress.rules'
-      owner: 'proxy'
-      group: 'proxy'
+      owner: '{{ proxy_user }}'
+      group: '{{ proxy_user }}'
       mode: '0644'
     - src: 'squid/xs-httpcache.j2'
       dest: '/usr/bin/xs-httpcache'
@@ -53,29 +53,29 @@
 
 - name: Create squid cache directory
   file: path=/library/cache
-        owner=proxy
-        group=proxy
+        owner={{ proxy_user }}
+        group={{ proxy_user }}
         mode=0750
         state=directory
 
 - name: Create squid log directory
   file: path=/var/log/squid3
-        owner=proxy
-        group=proxy
+        owner={{ proxy_user }}
+        group={{ proxy_user }}
         mode=0750
         state=directory
 
 - include: dansguardian.yml
 
 - name: Stop Squid
-  service: name=squid3
+  service: name={{ proxy }}
            state=stopped
   ignore_errors: yes
   when: not installing
 
 - name: Add squid to service list
   ini_file: dest='{{ service_filelist }}'
-            section=squid3
+            section={{ proxy }}
             option='{{ item.option }}'
             value='{{ item.value }}'
   with_items:

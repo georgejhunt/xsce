@@ -50,17 +50,17 @@
 - name: Create a moodle data dir with apache permission to write 
   file: path={{ moodle_data }}
         owner={{ apache_user }}
-        group={{apache_data}}
+        group={{ apache_data }}
         mode=0770
         state=directory
 
 - name: Remove stock moodle conf
-  file: path='/etc/{{apache_config_dir}}/moodle.conf'
+  file: path='/etc/{{ apache_config_dir }}/moodle.conf'
         state=absent
 
 - name: Put moodle config file in place
   template: src=022-moodle.j2
-            dest=/etc/{{apache_config_dir}}/022-moodle.conf
+            dest=/etc/{{ apache_config_dir }}/022-moodle.conf
             owner=root
             group=root
             mode=0644

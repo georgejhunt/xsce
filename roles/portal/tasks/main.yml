@@ -1,8 +1,8 @@
 - name: Create home for content on portal page
   file: path={{ item }}
         mode=0755
-        owner=apache
-        group=apache
+        owner={{ apache_data }}
+        group={{ apache_data }}
         state=directory
   with_items:
     - /library/content
@@ -23,7 +23,7 @@
 
 - name: Install home page and content config file
   template: src={{ item }}
-            dest=/etc/apache2/sites-available/
+            dest=/etc/{{ apache_config_dir }}
             owner=root
             group=root
             mode=0644
@@ -39,7 +39,9 @@
   with_items:
       - content_dir.conf
       - xsce-home-page.conf
+  when: is_debian
   notify: restart apache
 
 - name: enable mod_rewrite
   apache2_module: name=rewrite
+  when: is_debian

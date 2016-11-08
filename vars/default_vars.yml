@@ -30,9 +30,6 @@ xsce_admin_passw_hash: $6$xsce51$D.IrrEeLBYIuJkGDmi27pZUGOwPFp98qpl3hxMwWV4hXigF
 # password is 12admin
 dummy: $6$xsce51$JhKBX/nwYLG0DDMTPN6radpgd//P881O/JX0GKFn32XUrR/D0VqnVFdvMdI.XW.eGaQY2VBCraLq6qiH0fbkD0
 
-# platform differences
-apache_user: www-data
-
 # Languages
 default_language: en
 language_priority: en es

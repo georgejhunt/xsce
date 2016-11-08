@@ -1,16 +1,16 @@
 # dhcpd service is restarted with NM dispatcher.d script
 - name: Stop dhcpd
-  service: name=bind9
+  service: name={{ dns_service }}
            state=stopped
   when: not dhcpd_enabled
 
 - name: Stop named service
-  service: name=bind9
+  service: name={{ dns_service }}
            state=stopped
   when: not named_enabled
 
 - name: Start named service
-  service: name=bind9
+  service: name={{ dns_service }}
            state=started
   ignore_errors: True
   when: named_enabled
@@ -27,13 +27,13 @@
   ignore_errors: true
 
 - name: Stop squid service
-  service: name=squid3
+  service: name={{ proxy }}
            state=stopped
   when: not squid_enabled
 
 # Squid get re-loaded with dispatcher.d
 - name: Restart squid service
-  service: name=squid3
+  service: name={{ proxy }}
            state=started
   when: squid_enabled
 

@@ -1,3 +1,23 @@
+- name: Disable firewalld service
+  service: name=firewalld
+           enabled=no
+  when: not is_debian
+
+- name: Use larger hammer to disable firewalld (2 symbolic links involved)
+  shell: "systemctl disable firewalld.service"
+  when: not is_debian
+
+- name: Mask firewalld service
+  shell: 'systemctl mask firewalld'
+  ignore_errors: yes
+  when: not installing and not is_debian
+
+- name: Stop firewalld service
+  service: name=firewalld
+           state=stopped
+  ignore_errors: yes
+  when: not installing and not is_debian
+
 - name: Remove iptables.service file from /etc
   file: path=/etc/systemd/system/iptables.service 
         state=absent
@@ -21,5 +41,7 @@
   with_items:
    - { 0: 'gateway/iptables-config', 1: '/etc/sysconfig/iptables-config', 2: '0644' }
    - { 0: 'gateway/check-LAN', 1: '/usr/bin/check-LAN', 2: '0755' }
-   - { 0: 'gateway/iptables', 1: '/etc/network/if-pre-up.d/iptables', 2: '0755' }
 
+- name: Install debian config
+  template: src=gateway/iptables dest=/etc/network/if-pre-up.d/iptables
+  when: is debian

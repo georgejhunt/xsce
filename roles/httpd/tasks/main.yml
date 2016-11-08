@@ -16,8 +16,8 @@
             group=root
             mode={{ item.mode }}
   with_items:
-      - { src: '010-xsce.conf.j2' , dest: '/etc/{{apache_config_dir}}/010-xsce.conf', mode: '0755' }
-      - { src: 'proxy_ajp.conf.j2' , dest: '/etc/{{apache_config_dir}}/proxy_ajp.conf', mode: '0644' }
+      - { src: '010-xsce.conf.j2' , dest: '/etc/{{ apache_config_dir }}/010-xsce.conf', mode: '0755' }
+      - { src: 'proxy_ajp.conf.j2' , dest: '/etc/{{ apache_config_dir }}/proxy_ajp.conf', mode: '0644' }
       - { src: 'php.ini.j2' , dest: '/etc/php.ini' , mode: '0644' }
 
 # remove symlinks for mpm-event, replace with mpm-prefork
@@ -50,7 +50,7 @@
         state=absent
 
 - name: Create http pid dir
-  file: path=/var/run/{{apache_user}}
+  file: path=/var/run/{{ apache_user }}
         mode=0755
         owner=root
         group=root
@@ -61,16 +61,16 @@
          state=present
          
 - name: Add apache user to admin group
-  user: name={{apache_user}}
+  user: name={{ apache_user }}
         groups=admin
         state=present
         createhome=no
 
 - name: Create httpd log dir
-  file: path=/var/log/{{apache_user}}
+  file: path=/var/log/{{ apache_user }}
         mode=0755
-        owner={{apache_data}}
-        group={{apache_data}}
+        owner={{ apache_data }}
+        group={{ apache_data }}
         state=directory
 
 - name: Create admin group
@@ -78,6 +78,6 @@
          state=present
 
 - name: Enable httpd
-  service: name={{apache_service}}
+  service: name={{ apache_service }}
            enabled=yes
 

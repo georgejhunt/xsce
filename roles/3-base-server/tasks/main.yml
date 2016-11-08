@@ -7,7 +7,7 @@
   when: not installing
 
 - name: Restart httpd
-  service: name={{apache_service}}
+  service: name={{ apache_service }}
            state=restarted
   when: not installing
 

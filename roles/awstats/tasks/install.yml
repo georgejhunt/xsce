@@ -33,7 +33,7 @@
 
 - name: Install the Apache config for Advanced Web Statistics 
   template: src=apache.conf
-            dest=/etc/{{apache_config_dir}}/awstats.conf
+            dest=/etc/{{ apache_config_dir }}/awstats.conf
             owner=root
             group=root
             mode=0644

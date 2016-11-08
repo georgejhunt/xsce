@@ -11,7 +11,7 @@
   shell: if [ ! -d /library/dokuwiki ]; then mv /library/dokuwiki* /library/dokuwiki; fi
 
 - name: Install config file for dokuwiki in Apache
-  template: src=dokuwiki.conf.j2 dest=/etc/{{apache_config_dir}}/dokuwiki.conf
+  template: src=dokuwiki.conf.j2 dest=/etc/{{ apache_config_dir }}/dokuwiki.conf
   when: dokuwiki_enabled
 
 - name: enable the dokuwiki
@@ -30,5 +30,5 @@
   file: path=/library/dokuwiki owner={{ apache_data }} mode=0755 state=directory recurse=yes
 
 - name: Restart apache, so it picks up the new aliases
-  service: name={{apache_service}} state=restarted
+  service: name={{ apache_service }} state=restarted
 
