@@ -6,7 +6,17 @@
     - php5
   tags:
     - download
-  when: ansible_distribution == "Debian"
+  when: is_debian
+
+- name: Install httpd required packages
+  package: name={{ item }}
+           state=present
+  with_items:
+    - httpd
+    - php
+  tags:
+    - download
+  when: not is_debian
 
 - name: Create httpd config files
   template: backup=yes

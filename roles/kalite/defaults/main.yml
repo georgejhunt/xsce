@@ -1,7 +1,7 @@
 ---
 # The values here are defaults.
 # To override them edit the main var definitions in xsce/vars
-kalite_version: 0.15.1
+kalite_version: 0.16.1
 kalite_repo_url: "https://github.com/learningequality/ka-lite.git"
 kalite_root: "/library/ka-lite"
 kalite_user: kalite
@@ -15,6 +15,4 @@ kalite_server_port: 8008
 kalite_enabled: False
 kalite_cron_enabled: False
 khan_assessment_install: True
-khan_assessment_url: "http://pantry.learningequality.org/downloads/ka-lite/0.15/content/khan_assessment.zip"
-# debian puts installed stuff in /usr/local
-ka_prefix: /usr/local
+khan_assessment_url: "http://pantry.learningequality.org/downloads/ka-lite/0.16/content/khan_assessment.zip"

@@ -18,7 +18,7 @@
             mode=0644
   with_items:
     - { src: 'munin.conf.j2', dest: '/etc/munin/munin.conf' }
-    - { src: 'munin24.conf.j2', dest: '/etc/apache2/sites-available/munin24.conf' }
+    - { src: 'munin24.conf.j2', dest: '/etc/{{ apache_config_dir }}/munin24.conf' }
 
 - name: Create admin user
   htpasswd: path=/etc/munin/munin-htpasswd
@@ -37,13 +37,13 @@
   file: src=/etc/apache2/sites-available/munin24.conf
         dest=/etc/apache2/sites-enabled/munin24.conf
         state=link
-  when: munin_enabled
+  when: munin_enabled and is_debian
 
 - name: disable apache lookup
   file: src=/etc/apache2/sites-available/munin24.conf
         dest=/etc/apache2/sites-enabled/munin24.conf
         state=absent
-  when: not munin_enabled
+  when: not munin_enabled and is_debian
 
 - name: Disable munin-node service when it becomes disabled
   service: name=munin-node

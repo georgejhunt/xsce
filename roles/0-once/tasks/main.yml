@@ -11,22 +11,32 @@
 - include: selinux.yml
   when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'
 
+- include: xo.yml
+  when: xo_model != "none" or osbuilder is defined
+
+- include: centos.yml
+  when: ansible_distribution == "CentOS"
+
+- include: fedora.yml
+  when: ansible_distribution == "Fedora"
+
+- include: fix_ansible_version.yml
 - include: fl.yml
 - include: prep.yml
 - include: xsce_ini.yml
-- name: Keep yum cache
-  ini_file: dest=/etc/yum.conf
-            section=main
-            option=keepcache
-            value=1
-  when: ansible_distribution != "Debian"
-
 - include: chrony.yml
 - include: prelim.yml
 - include: yum.yml
 # let the cmdsrv.yml in xsce-admin serve
 #- include: cmdsrv.yml
 - include: patch_udev.yml
+
+- name: Keep yum cache
+  ini_file: dest=/etc/yum.conf
+            section=main
+            option=keepcache
+            value=1
+  when: ansible_distribution != "Debian"
 
 # Put conditional includes for platforms here
 ##  DISCOVER PLATFORMS ######

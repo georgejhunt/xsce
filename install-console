@@ -10,6 +10,8 @@ if [ -f /etc/xsce/xsce.env ]
 then
   . /etc/xsce/xsce.env
   cd $XSCE_DIR
+else
+  XSCE_DIR=/opt/schoolserver/xsce
 fi
 
 PLAYBOOK="xsce-base.yml"
@@ -30,7 +32,7 @@ then
  SELINUX_BEFORE=`cat /etc/selinux/config | gawk -F= '/^SELINUX=/{ print $2 }'`
 fi
 
-export ANSIBLE_LOG_PATH="/opt/schoolserver/xsce/xsce-install.log"
+export ANSIBLE_LOG_PATH="$XSCE_DIR/xsce-install.log"
 ansible-playbook -i $INVENTORY $PLAYBOOK --connection=local
 
 if [ -f /etc/selinux/config ]

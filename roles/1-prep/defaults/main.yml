@@ -48,10 +48,5 @@ ssid: XSCE
 hostapd_wait: 10
 gui_port: 80
 
-# debian/fedora related variables
-apache_service:  httpd
-apache_user: apache
-apache_data: apache
-apache_config_dir: httpd/config.d
 
 

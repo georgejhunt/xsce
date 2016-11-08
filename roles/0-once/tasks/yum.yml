@@ -12,6 +12,7 @@
 
 - name: Create local yum repo
   shell: createrepo {{ yum_packages_dir }}
+  when: ansible_distribution != "Debian"
 
 - name: Install local repo file.
   template: dest=/etc/yum.repos.d/xsce-local.repo
@@ -39,7 +40,7 @@
            state=present
   with_items:
     - inetutils-syslogd
-    - wpasupplicand
+    - wpasupplicant
   when: ansible_distribution == "Debian"
   tags:
     - download

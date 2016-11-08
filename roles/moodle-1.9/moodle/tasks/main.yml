@@ -9,7 +9,7 @@
     - download
 
 - name: Remove stock moodle conf
-  file: path='/etc/{{ apache_service }}/sites-enabled/moodle.conf'
+  file: path='/etc/{{ apache_config_dir }}/moodle.conf'
         state=absent
 
 - name: Configure moodle
