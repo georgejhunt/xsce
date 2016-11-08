@@ -31,6 +31,7 @@ import string
 import crypt
 import spwd
 import cracklib
+import platform
 
 # Config Files
 xsce_config_file = "/etc/xsce/xsce.env"
@@ -47,6 +48,20 @@ cmdsrv_no_workers = 5
 cmdsrv_job_poll_sleep_interval = 1
 cmdsrv_max_concurrent_jobs = 7
 
+# variables that have different paths, fedora vs debian
+if platform.linux_distribution() == 'debian':
+   ansible_playbook_program = '/usr/local/bin/ansible-playbook'
+   ansible_program = '/usr/local/bin/ansible'
+   apache_data = 'www-data'
+   squid_service = 'squid3'
+   df_program = '/bin/df'
+else:
+   ansible_playbook_program = '/usr/bin/ansible-playbook'
+   ansible_program = '/usr/bin/ansible'
+   apache_data = 'apache'
+   squid_service = 'squid'
+   df_program = '/usr/bin/df'
+
 # Derived Variables
 xsce_cmdsrv_path = xsce_base_path + "/xsce_cmdsrv"
 xsce_cmdsrv_pid_file = "/var/run/xsce-cmdsrv.pid"
@@ -54,7 +69,7 @@ xsce_cmdsrv_ready_file = "/var/run/xsce-cmdsrv-ready"
 xsce_cmdsrv_dbpath = xsce_cmdsrv_path + "/" + xsce_cmdsrv_dbname
 
 # Constants - ToDo add to xsce_cmdsrv_config_file
-squid_whitelist = "/etc/squid3/sites.whitelist.txt"
+squid_whitelist = "/etc/" + squid_service + "/sites.whitelist.txt"
 # for kiwix zims
 kiwix_catalog_file = "/etc/xsce/kiwix_catalog.json"
 zim_downloads_dir = "/library/downloads/zims/"
@@ -66,10 +81,6 @@ zim_index_dir = "/library/zims/index/"
 rachel_downloads_dir = "/library/downloads/"
 rachel_working_dir = "/library/working/"
 rachel_version = 'rachelusb_32EN_3_1_5'
-
-# disto variables
-output = subprocess.check_output(["/usr/bin/which","ansible"])
-ansible_prefix = os.path.dirname(output)+'/'
 
 # Global Variables
 last_command_rowid = 0
@@ -131,7 +142,7 @@ def main():
     ipc_sock = "/run/cmdsrv_sock"
     client_url = "ipc://" + ipc_sock
 
-    owner = pwd.getpwnam("www-data")
+    owner = pwd.getpwnam(apache_data)
     group = grp.getgrnam("xsce-admin")
 
     # Prepare our context and sockets
@@ -582,10 +593,10 @@ def cmd_handler(cmd_msg):
         "INST-RACHEL": install_rachel,
         "DEL-DOWNLOADS": del_downloads,
         "RESTART-KIWIX": restart_kiwix,
-        "START-VNC": start_vnc,
-        "STOP-VNC": stop_vnc,
         "REBOOT": reboot_server,
         "POWEROFF": poweroff_server,
+        "REMOTE-ADMIN-CTL": remote_admin_ctl, #true/false
+        "GET-REMOTE-ADMIN-STATUS": get_remote_admin_status, #returns activated
         "CHGPW": change_password
         }
 
@@ -740,7 +751,7 @@ def subproc_cmd(cmdstr):
     return (outp)
 
 def get_ansible_version():
-    outp = subprocess.check_output("ansible --version | head -n1 | cut -f2 -d' '",shell=True)
+    outp = subprocess.check_output(ansible_program + " --version | head -n1 | cut -f2 -d' '",shell=True)
     return outp
 
 def wget_file(cmd_info):
@@ -870,7 +881,7 @@ def get_storage_info_parted(dev):
 
 def get_storage_info_df(part_dev):
     part_prop = {}
-    outp = subprocess.check_output(["/bin/df", part_dev, "-m"])
+    outp = subprocess.check_output(["df_program", part_dev, "-m"])
     str_array = outp.split('\n')
     params = str_array[1]
     parm_arr = params.split(' ')
@@ -977,14 +988,14 @@ def run_ansible(cmd_info): # create multiple jobs to run in succession
 
     if cmd_info['cmd'] == "RUN-ANSIBLE":
 
-        job_command = ansible_prefix + "ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
+        job_command = ansible_playbook_program + " -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local"
 
-        if 'cmd_args' in cmd_info.keys() and 'tags' in cmd_info['cmd_args'].keys():
+        if 'cmd_args' in cmd_info:
             tags = cmd_info['cmd_args']['tags']
             if tags != "ALL-TAGS":
                 job_command += ' --tags="' +  tags +'"'
-            else:
-                return cmd_malformed(cmd_info['cmd'])
+        else:
+            return cmd_malformed(cmd_info['cmd'])
 
     else: # cmd is "RESET-NETWORK"
 
@@ -1166,50 +1177,6 @@ def restart_kiwix(cmd_info):
         resp = cmd_error(cmd_info['cmd'])
     return (resp)
 
-def start_vnc(cmd_info):
-    if "cmd_args" in cmd_info.keys() and "REMOTE_ADDR" in cmd_info["cmd_args"].keys():
-        remote_addr =  cmd_info["cmd_args"]["REMOTE_ADDR"]
-        rc = subprocess.call(["scripts/display-desktop.sh", remote_addr])
-    else:
-        rc = subprocess.call(["scripts/display-desktop.sh"])
-    #print rc
-    if rc == 0:
-        resp = cmd_success(cmd_info['cmd'])
-    else:
-        resp = cmd_error(cmd_info['cmd'])
-    return (resp)
-
-def stop_vnc(cmd_info):
-    rc = subprocess.call(["scripts/secure-desktop.sh"])
-    #print rc
-    if rc == 0:
-        resp = cmd_success(cmd_info['cmd'])
-    else:
-        resp = cmd_error(cmd_info['cmd'])
-    return (resp)
-
-def start_vnc(cmd_info):
-    if "cmd_args" in cmd_info.keys() and "REMOTE_ADDR" in cmd_info["cmd_args"].keys():
-        remote_addr =  cmd_info["cmd_args"]["REMOTE_ADDR"]
-        rc = subprocess.call(["scripts/display-desktop.sh", remote_addr])
-    else:
-        rc = subprocess.call(["scripts/display-desktop.sh"])
-    #print rc
-    if rc == 0:
-        resp = cmd_success(cmd_info['cmd'])
-    else:
-        resp = cmd_error(cmd_info['cmd'])
-    return (resp)
-
-def stop_vnc(cmd_info):
-    rc = subprocess.call(["scripts/secure-desktop.sh"])
-    #print rc
-    if rc == 0:
-        resp = cmd_success(cmd_info['cmd'])
-    else:
-        resp = cmd_error(cmd_info['cmd'])
-    return (resp)
-
 def reboot_server(cmd_info):
     resp = cmd_success_msg(cmd_info['cmd'], 'Reboot Initiated')
     outp = subprocess.Popen(["scripts/reboot.sh"])
@@ -1220,6 +1187,20 @@ def poweroff_server(cmd_info):
     outp = subprocess.Popen(["scripts/poweroff.sh"])
     return (resp)
 
+def remote_admin_ctl(cmd_info):
+    try:
+        bool_activate = cmd_info['cmd_args']['activate']
+        outp = subprocess.Popen(["scripts/remote_admin_ctl.sh",bool_activate])
+        resp = get_remote_admin_status(cmd_info)
+        return (resp)
+    except:
+        return cmd_malformed(cmd_info['cmd'])
+
+def get_remote_admin_status(cmd_info):
+    outp = subprocess.check_output(["scripts/get_remote_admin_status.sh"])
+    #resp = json_array("remote",outp)
+    return (outp.strip())
+    
 def change_password(cmd_info):
     #print cmd_info['cmd_args']
     try:
@@ -1601,11 +1582,7 @@ def init():
     # Opening a connection creates if not exist
     # No DB locking done in init as is single threaded
 
-    try:
-        statinfo = os.stat(xsce_cmdsrv_dbpath)
-    except:
-        outp = subprocess.check_output(["/usr/bin/touch", xsce_cmdsrv_dbpath])
-        statinfo = os.stat(xsce_cmdsrv_dbpath)
+    statinfo = os.stat(xsce_cmdsrv_dbpath)
     if statinfo.st_size == 0:
         conn = sqlite3.connect(xsce_cmdsrv_dbpath)
         conn.execute ("CREATE TABLE commands (cmd_msg text, create_datetime text)")
@@ -1713,7 +1690,7 @@ def read_xsce_vars():
 def get_ansible_facts():
     global ansible_facts
 
-    command = ansible_prefix + "ansible localhost -i " + xsce_git_path + "/ansible_hosts  -m setup -o  --connection=local"
+    command = ansible_program + " localhost -i " + xsce_git_path + "/ansible_hosts  -m setup -o  --connection=local"
     args = shlex.split(command)
     outp = subprocess.check_output(args)
     if (get_ansible_version() < '2'):
@@ -1728,10 +1705,10 @@ def get_ansible_tags():
     global ansible_tags
 
     if (get_ansible_version() < '2'):
-        command = ansible_prefix + "ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --tags=???"
+        command = ansible_playbook_program + " -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --tags=???"
         splitter = 'values: '
     else:
-        command = ansible_prefix + "ansible-playbook -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --list-tags"
+        command = andible_playbook_program + " -i " + xsce_git_path + "/ansible_hosts " + xsce_git_path + "/xsce-from-console.yml --connection=local --list-tags"
         splitter = 'TASK TAGS: '
 
     args = shlex.split(command)
