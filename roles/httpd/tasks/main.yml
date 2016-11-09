@@ -49,8 +49,8 @@
   when: is_debian
 
 - name: create symlinks for enabling our site
-  file: path=/etc/apache2/mods-enabled/{{ item }}
-        src=/etc/apache2/mods-available/{{ item }}
+  file: path=/etc/apache2/sites-enabled/{{ item }}
+        src=/etc/apache2/sites-available/{{ item }}
         state=link
   with_items:
       - 010-xsce.conf

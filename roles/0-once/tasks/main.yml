@@ -8,6 +8,11 @@
     is_debian: True
   when: ansible_distribution == "Debian"
 
+- name: get the uuidgen program
+  package: name=uuid-runtime
+           state=present
+  when: is_debian
+
 - include: selinux.yml
   when: ansible_selinux is defined and ansible_version >= '2' and ansible_selinux or ansible_selinux['status'] is defined and ansible_version < '2' and ansible_selinux['status'] != 'disabled'
 
@@ -30,7 +35,7 @@
 # let the cmdsrv.yml in xsce-admin serve
 #- include: cmdsrv.yml
 - include: patch_udev.yml
-- include net_mods.yml
+- include: net_mods.yml
   when: not is_debian
 
 - name: Keep yum cache

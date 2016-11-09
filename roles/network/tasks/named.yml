@@ -50,7 +50,7 @@
     - { src: 'named/named.ip6.local', dest: '/var/named-xs/named.ip6.local' , owner: "{{ dns_user }}" , mode: '0644'}
     - { src: 'named/named.local', dest: '/var/named-xs/named.local' , owner: "{{ dns_user }}" , mode: '0644'}
     - { src: 'named/named.rfc1912.zones', dest: '/var/named-xs/named.rfc1912.zones' , owner: "{{ dns_user }}" , mode: '0644'}
-    - { src: 'named/named.root', dest: '/var/named-xs/named.root' , owner: "{  dns_user }}" , mode: '0644'}
+    - { src: 'named/named.root', dest: '/var/named-xs/named.root' , owner: "{{ dns_user }}" , mode: '0644'}
     - { src: 'named/named.root.hints', dest: '/var/named-xs/named.root.hints' , owner: "{{ dns_user }}" , mode: '0644'}
     - { src: 'named/named.zero', dest: '/var/named-xs/named.zero' , owner: "{{ dns_user }}" , mode: '0644'}
     - { src: 'named/school.external.zone.db', dest: '/var/named-xs/school.external.zone.db' , owner: "{{ dns_user }}" , mode: '0644'}

@@ -1,5 +1,6 @@
-#!/bin/sh
-. /etc/xsce/xsce.env
+#!/bin/bash
+OS=`grep ^ID= /etc/*release|cut -d= -f2`
+OS=${OS//\"/}
 
 # enable this install config to be tracked
 if [ ! -f /etc/xsce/uuid ]; then
@@ -58,5 +59,6 @@ cat <<EOF
 "xo_model"                : "$XO_VERSION",
 "xsce_base_ver"           : "$BASE",
 "ansble_version"	  : "$ANSIBLE_VERSION",
+"os"                      : "$OS",
 "xsce_preload"            : "$PRELOAD"}
 EOF

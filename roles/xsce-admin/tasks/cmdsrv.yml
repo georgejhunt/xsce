@@ -130,6 +130,7 @@
   template: backup=yes
             src={{ item.src }}
             dest={{ item.dest }}
+            mode={{ item.mode }}
   with_items:
     - { src: 'cmdsrv/xsce-cmdsrv-init.j2', dest: '/etc/init.d/xsce-cmdsrv', mode: '0755'}
     - { src: 'cmdsrv/zmq.ini', dest: '/etc/php5/apache2/conf.d/20-zmq.ini', mode: '0755'}
@@ -147,6 +148,7 @@
 - name: Enable xsce-cmdsrv service
   service: name=xsce-cmdsrv
            enabled=yes
+  when: not is_debian
 
 #  when: xsce-cmdsrv_enabled - always enabled
 

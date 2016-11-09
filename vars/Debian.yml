@@ -2,7 +2,9 @@ is_debian: true
 dns_service: bind9
 dns_user: bind
 proxy: squid3
+proxy_user: squid
 apache_service: apache2
+apache_user: apache
 apache_config_dir: apache2/sites-available
 apache_data: www-data
 smb_service: smbd
