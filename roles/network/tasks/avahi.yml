@@ -42,7 +42,7 @@
   
 - name: Grab a clean copy of ssh.service
   copy: src='/usr/share/doc/{{ avahi_ver.stdout }}/ssh.service'
-        dest='etc/avahi/services/'
+        dest='/etc/avahi/services/'
   when: avahi_ver.stdout != "" and not is_debian
 
 - name: Grab a clean copy of ssh.service

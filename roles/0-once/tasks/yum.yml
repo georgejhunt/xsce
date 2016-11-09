@@ -10,7 +10,12 @@
   shell: dnf install -y yum
   when: ansible_distribution == "Fedora" and ansible_distribution_version|int >= 22 and ansible_machine != "armv7l"
 
-- name: Create local yum repo
+- name: get the createrepo program
+  package: name=createrepo
+           state=present
+  when: ansible_distribution != "Debian"
+
+- name: Create local repo
   shell: createrepo {{ yum_packages_dir }}
   when: ansible_distribution != "Debian"
 
@@ -59,7 +64,6 @@
    - net-tools
    - openssh-server
    - sudo
-   - inetutils-syslogd
    - logrotate
    - make
    - tar
@@ -69,7 +73,6 @@
    - bridge-utils
    - usbutils
    - hostapd
-   - wpasupplicant
    - wget
    - openssl   #FC 18 does not supply, but pear requires
    - gawk
@@ -80,22 +83,26 @@
   package: name={{ item }}
            state=latest
   with_items:
-   - network-manager
+   - NetworkManager
    - glibc # CVE-2015-7547
+   - bash
+   - iptables
   when: ansible_distribution != "Debian"
   tags:
     - download
 
-- name: Update common packages
+- name: Update common packages  (debian)
   package: name={{ item }}
            state=latest
   with_items:
+   - libc
+   - libc6
    - bash
    - iptables
-   - libc-bin
-   - libc6
+  when: ansible_distribution == "Debian"
   tags:
     - download
+
 
 # instuctions state to start with a fully updated system before starting, stop using
 # ansible as a crutch for developers not following the directions and taking short-cuts

@@ -8,7 +8,7 @@ PIDFile=/var/run/xsce-cmdsrv.pid
 {% if is_debian %}
 ExecStart=/etc/init.d/xsce-cmdsrv  start 
 {% else %}
-ExecStart=/usr/libexec/xsce-cmdsrv-init  start 
+ExecStart=/usr/libexec/xsce-cmdsrv  start 
 {% endif %}
 ExecStop=/usr/bin/xsce-cmdsrv-ctl STOP
 

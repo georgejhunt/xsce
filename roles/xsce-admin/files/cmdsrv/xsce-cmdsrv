@@ -802,7 +802,8 @@ def get_storage_info(cmd_info):
         elif item_attr['TYPE'] == "part":
             part_dev = '/dev/'+ item_attr['NAME']
             # lsblk includes extended partition that holds other partition(s)
-            if item_attr['FSTYPE'] != "":
+            if item_attr['FSTYPE'] != "" and \
+                  part_dev in system_storage[system_storage_idx]['index']:
                 blkidx = system_storage[system_storage_idx]['index'][part_dev]
                 system_storage[system_storage_idx]['blocks'][blkidx]['lsblk'] = item_attr
                 part_prop = get_storage_info_df(part_dev)

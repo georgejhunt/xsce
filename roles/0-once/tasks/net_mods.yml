@@ -1,19 +1,15 @@
 - name: Disable systemd-networkd.service
   service: name=systemd-networkd.service
            enabled=no
-  when: not is_F18
+  when: not is_F18 and not is_centos
 
 - name: Mask systemd-networkd.service
   shell: 'systemctl mask systemd-networkd'
-  when: not is_F18
+  when: not is_F18 and not is_centos
 
 - name: Disable systemd-hostnamed.service
   service: name=systemd-hostnamed.service
            enabled=no
-  when: not is_F18
-
-- name: Mask systemd-networkd.service
-  shell: 'systemctl mask systemd-hostnamed'
   when: not is_F18
 
 - name: Disable dbus-org.freedesktop.hostname1.service
