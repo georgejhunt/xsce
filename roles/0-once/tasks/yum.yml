@@ -72,6 +72,7 @@
    - wpasupplicant
    - wget
    - openssl   #FC 18 does not supply, but pear requires
+   - gawk
   tags:
     - download
 

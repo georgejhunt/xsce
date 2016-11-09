@@ -8,7 +8,7 @@
     - liblzma-dev
     - libapache2-mod-wsgi
     - libapache2-mod-xsendfile
-  when; is_debian
+  when: is_debian
   tags:
     - download
 
@@ -22,7 +22,7 @@
     - xz-devel
     - mod_wsgi
     - mod-xsendfile
-  when; not is_debian
+  when: not is_debian
   tags:
     - download
 

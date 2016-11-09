@@ -76,6 +76,10 @@
         owner=root
         group=root
 
+- name: create an empty database
+  file: path={{ cmdsrv_path }}/{{ xsce_cmdsrv_dbname }}
+        state=touch
+
 - name: Copy scripts
   copy: src={{ item }}
         dest="{{ cmdsrv_path }}/scripts"
