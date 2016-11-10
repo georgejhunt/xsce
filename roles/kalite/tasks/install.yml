@@ -26,11 +26,9 @@
 # python-dateutil==2.4.2
 # django-dbbackup==2.3.2   ## no rpm
 
-- name: Download kalite with pip
-  pip: name={{ item }}       
+- name: Downoad kalite with pip
+  pip: name=ka-lite version={{ kalite_version }}       
        extra_args="--download {{ pip_packages_dir }}"
-  with_items:
-    - ka-lite>=0.16,<0.17
   when: not {{ use_cache }} and not {{ no_network }}
   tags:
     - download2
@@ -47,10 +45,8 @@
             timeout=2000
 
 - name: Install kalite with pip
-  pip: name={{ item }}
+  pip: name=ka-lite version=0.16
        extra_args="--no-index --find-links=file://{{ pip_packages_dir }}"
-  with_items:
-    - ka-lite>=0.16,<0.17
   
 - name: Default is to have cronserve started with kalite
   set_fact:

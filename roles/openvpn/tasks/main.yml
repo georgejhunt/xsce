@@ -47,7 +47,7 @@
   when: is_debian
 
 - name: put dispatcher up for NM
-  template: src=15-openvpn dest=/etc/NetworkManagerdispatcher.d/
+  template: src=15-openvpn dest=/etc/NetworkManager/dispatcher.d/
   when: not is_debian
 
 - name: check for manually configured openvpn tunnel

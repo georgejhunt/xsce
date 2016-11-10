@@ -9,6 +9,17 @@
     - libapache2-mod-fcgid
   tags:
     - download
+  when: is_debian
+
+- name: Install munin package
+  package: name={{ item }}
+           state=present
+  with_items:
+    - munin
+    - munin-node
+  tags:
+    - download
+  when: not is_debian
 
 - name: Copy munin config file
   template: src={{ item.src }}

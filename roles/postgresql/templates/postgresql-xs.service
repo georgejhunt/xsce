@@ -1,3 +1,4 @@
+{% if is_debian %}
 [Unit]
 Description=PostgreSQL database server
 After=network.target
@@ -26,7 +27,6 @@ Environment=PGSTARTTIMEOUT=270
 
 Environment=PGDATA=/library/pgsql-xs
 
-
 ExecStart=/usr/lib/postgresql/9.4/bin/pg_ctl start -D ${PGDATA} -s -w -t ${PGSTARTTIMEOUT}
 ExecStop=/usr/lib/postgresql/9.4/bin/pg_ctl stop -D ${PGDATA} -s -m fast
 ExecReload=/usr/lib/postgresql/9.4/bin/pg_ctl reload -D ${PGDATA} -s
@@ -37,3 +37,9 @@ ExecReload=/usr/lib/postgresql/9.4/bin/pg_ctl reload -D ${PGDATA} -s
 TimeoutSec=300
 
 [Install]
+{% else %}
+# --postgres_xs.service
+.include /usr/lib/systemd/system/postgresql.service
+[Service]
+Environment=PGDATA=/library/pgsql-xs
+{% endif %}

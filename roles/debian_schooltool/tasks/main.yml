@@ -15,7 +15,7 @@
     - redis-server
     - libjpeg-dev
     - xvfb
-  when: debian_schooltool_install
+  when: debian_schooltool_install and is_debian
   tags:
     - download
 

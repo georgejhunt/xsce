@@ -21,7 +21,7 @@
     - python-devel
     - xz-devel
     - mod_wsgi
-    - mod-xsendfile
+    - mod_xsendfile
   when: not is_debian
   tags:
     - download

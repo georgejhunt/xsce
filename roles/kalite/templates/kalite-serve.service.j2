@@ -6,7 +6,7 @@ After=syslog.target network.target local-fs.target
 Type=forking
 Environment="KALITE_HOME={{ kalite_root }}"
 ExecStart={{ kalite_program }} start {{ job_scheduler_stanza }}--port={{ kalite_server_port }}
-ExecStop={{ ka_prefix }}/bin/kalite stop
+ExecStop={{ kalite_program }} stop
 TimeoutStartSec=900
 
 [Install]
