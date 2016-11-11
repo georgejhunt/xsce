@@ -24,13 +24,14 @@
 
 - name: Create directory for awstat to use as intermediate summary storage
   file: path={{ item }}
-        mode=0755
+        mode=0750
         owner={{ apache_data }}
         group={{ apache_data }}
         state=directory
+        force=true
   with_items:
     - "{{ awstats_data_dir }}"
-
+    - "{{ apache_log_dir }}"
 - name: Install the Apache config for Advanced Web Statistics 
   template: src=apache.conf
             dest=/etc/{{ apache_config_dir }}/awstats.conf
@@ -83,7 +84,7 @@
   when: awstats_enabled
 
 - name: On first enabling of awstats, summarize httpd logs up to now
-  shell: /usr/bin/perl /usr/share/awstats/wwwroot/cgi-bin/awstats.pl -config=schoolserver -update
+  shell: /bin/perl /usr/share/awstats/wwwroot/cgi-bin/awstats.pl -config=schoolserver -update
   when: awstats_enabled and not is_debian
 
 - name: On first enabling of awstats, summarize httpd logs up to now

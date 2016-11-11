@@ -12,3 +12,4 @@ nmb_service: nmbd
 kalite_program: /usr/local/bin/kalite
 systemctl_program: /bin/systemctl
 mysql_service: mysql
+apache_log: /var/log/apache2/access.log

@@ -11,4 +11,5 @@ ExecStart=/usr/bin/calibre-server --daemonize --pidfile=/var/run/calibre.pid --p
 ExecStart=/bin/calibre-server --daemonize --pidfile=/var/run/calibre.pid --port={{ calibre_port }} --with-library={{ calibre_dbpath }} 
 {% endif %}
 [Install]
+TimeoutStartSec=900
 WantedBy=multi-user.target

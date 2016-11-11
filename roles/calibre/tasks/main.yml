@@ -47,8 +47,8 @@
   service: name=calibre-serve
            enabled=yes
            state=started
-  async: 900
-  poll: 5
+  #async: 900
+  #poll: 5
   when: calibre_enabled
 
 - name: Disable Calibre server
