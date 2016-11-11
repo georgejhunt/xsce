@@ -32,15 +32,6 @@
      - { src: 'sugarizer.ini' , dest: '{{ sugarizer_location }}/sugarizer/server' }
 #     - { src: 'sugarizer.conf' , dest: '/etc/apache2/sites-available' }
 
-- name: turn on mod_proxy
-  command: a2enmod {{ item }}
-  with_items:
-     - proxy
-     - proxy_html
-     - headers
-     - rewrite
-  when: is_debian
-
 #- name: Create the symlink enabling the rewrite
 #  file: src=/etc/apache2/sites-available/sugarizer.conf
 #        dest=/etc/apache2/sites-enabled/sugarizer.conf

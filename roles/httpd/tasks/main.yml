@@ -48,6 +48,15 @@
       - mpm_prefork.load
   when: is_debian
 
+- name: turn on mod_proxy
+  command: a2enmod {{ item }}
+  with_items:
+     - proxy
+     - proxy_html
+     - headers
+     - rewrite
+  when: is_debian
+
 - name: create symlinks for enabling our site
   file: path=/etc/apache2/sites-enabled/{{ item }}
         src=/etc/apache2/sites-available/{{ item }}
