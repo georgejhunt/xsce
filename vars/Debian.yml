@@ -13,3 +13,4 @@ kalite_program: /usr/local/bin/kalite
 systemctl_program: /bin/systemctl
 mysql_service: mysql
 apache_log: /var/log/apache2/access.log
+apache_log_dir: /var/log/apache2
