@@ -24,11 +24,14 @@
 - name: Disable network.service
   service: name=network
            enabled=no
+  when: not is_F18
 
 - name: Mask network.service
   shell: 'systemctl mask network.service'
+  when: not is_F18
 
 # Network Manager starts this if needed
 - name: Disable wpa_supplicant
   service: name=wpa_supplicant
            enabled=no
+  when: not is_F18
