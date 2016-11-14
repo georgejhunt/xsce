@@ -1,9 +1,23 @@
 
 - include: xsce_ini.yml
 - include: fl.yml
+
+- include: xo.yml
+  when: xo_model != "none" or osbuilder is defined
+
+- include: centos.yml
+  when: ansible_distribution == "CentOS"
+
+- include: fedora.yml
+  when: ansible_distribution == "Fedora"
+
+# the following, decendent from fedora, but works with debian also
 - include: yum.yml
+
 - include: sysctl.yml
 - include: html.yml
 - include: prep.yml
+- include: prelim.yml
 - include: net_mods.yml
-  when: not is_debian
+  when: not is_debian and not is_F18
+
