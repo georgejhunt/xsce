@@ -1,5 +1,7 @@
 
 - include: xsce_ini.yml
+
+# create the directory structure for XSCE
 - include: fl.yml
 
 - include: xo.yml
@@ -11,13 +13,30 @@
 - include: fedora.yml
   when: ansible_distribution == "Fedora"
 
-# the following, decendent from fedora, but works with debian also
+# the following installs common packages for both debian and fedora
 - include: yum.yml
 
-- include: sysctl.yml
+- sysctl: name=net.ipv4.ip_forward value=1 state=present
+- sysctl: name=net.ipv4.conf.default.rp_filter value=1 state=present
+- sysctl: name=net.ipv4.conf.default.accept_source_route value=0 state=present
+- sysctl: name=kernel.sysrq value=1 state=present
+- sysctl: name=kernel.core_uses_pid value=1 state=present
+- sysctl: name=net.ipv4.tcp_syncookies value=1 state=present
+- sysctl: name=kernel.shmmax value=268435456 state=present
+
+- name: Set default Timezone
+  shell: ln -sf /usr/share/zoneinfo/{{ xsce_TZ }} /etc/localtime
+  when: xsce_TZ is defined and xsce_TZ != ""
+
 - include: html.yml
-- include: prep.yml
-- include: prelim.yml
+
+- name: Install custom profile file
+  template: dest=/etc/profile.d/zzz_xsce.sh
+            src=zzz_xsce.sh
+            owner=root
+            mode=0644
+            backup=no
+
 - include: net_mods.yml
   when: not is_debian and not is_F18
 

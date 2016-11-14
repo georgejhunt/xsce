@@ -72,6 +72,7 @@
             group=root
             mode=0755
 
+# xsce-prep runs on first boot of xsce, mostly to sense network adapters
 - name: Install xsce-prep
   template: src=xsce-prep
             dest=/usr/sbin
