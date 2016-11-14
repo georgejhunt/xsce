@@ -1,4 +1,5 @@
 # get local vars from scripts in /etc/ansible/facts.d
+# on first run, this will generate UUID
 
 - name: re-read facts
   setup: filter=ansible_local

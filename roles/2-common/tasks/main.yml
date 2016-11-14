@@ -1,3 +1,9 @@
 
+- include: xsce_ini.yml
+- include: fl.yml
+- include: yum.yml
 - include: sysctl.yml
 - include: html.yml
+- include: prep.yml
+- include: net_mods.yml
+  when: not is_debian
