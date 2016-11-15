@@ -5,9 +5,12 @@
 # By convention we use True/False to indicate boolean constants.
 
 # Installation Constants
+content_base: "/library"
+www_root: "{{ content_base }}/www_root"
+appdata: "{{ www_root }}/appdata"
+
 xsce_base: /opt/schoolserver
 xsce_dir: "{{ xsce_base }}/xsce"
-content_base: "/library"
 pip_packages_dir: "{{ xsce_base }}/pip-packages"
 yum_packages_dir: "{{ xsce_base }}/yum-packages"
 downloads_dir: "{{ xsce_base }}/downloads"
@@ -221,8 +224,8 @@ calibre_port: 8010
 rachel_install: True
 rachel_enabled: False
 rachel_content_found: False
-rachel_url: /rachel
-rachel_doc_root: /var/www/html{{ rachel_url }}
+#rachel_url: /rachel
+rachel_doc_root: "{{ www_root}}"
 
 # Kiwix-Serve
 kiwix_install: True
