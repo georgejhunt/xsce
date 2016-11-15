@@ -2,7 +2,6 @@
   package: name={{ item }}
            state=present
   with_items:
-    - python-pip
     - gcc
     - python-dev
     - liblzma-dev
@@ -11,6 +10,10 @@
   when: is_debian
   tags:
     - download
+
+- name: fix the pip bug (incompatible with requests)
+  command: easy_install --upgrade pip
+  when: is_debian
 
 - name: Install IIAB required packages
   package: name={{ item }}
