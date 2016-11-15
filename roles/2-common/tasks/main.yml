@@ -14,7 +14,7 @@
   when: ansible_distribution == "Fedora"
 
 # the following installs common packages for both debian and fedora
-- include: yum.yml
+- include: packages.yml
 
 - sysctl: name=net.ipv4.ip_forward value=1 state=present
 - sysctl: name=net.ipv4.conf.default.rp_filter value=1 state=present
