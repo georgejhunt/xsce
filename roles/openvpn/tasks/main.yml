@@ -50,6 +50,16 @@
   template: src=15-openvpn dest=/etc/NetworkManager/dispatcher.d/
   when: not is_debian
 
+- name: check for REMOTE_ADMIN_ALLOWED in /etc/xsce/xsce.env
+  shell: grep REMOTE_ADMIN_ALLOWED=True /etc/xsce/xsce.env
+  ignore_errors: true
+  register: allowed
+
+- name: create a variable
+  set_fact:
+     remote_admin_allowed=True
+  when: allowed.stdout == "REMOTE_ADMIN_ALLOWED=True"
+
 - name: check for manually configured openvpn tunnel
   stat: path=/etc/openvpn/xsce-vpn.conf
   register: stat
@@ -57,11 +67,11 @@
 # note that ansible does not currently handle @ in a service name
 - name:  enable the openvpn tunnel at boot time
   shell: systemctl enable openvpn@xscenet.service
-  when:  openvpn_enabled and not stat.exists is defined and is_debian
+  when:  openvpn_enabled and not stat.exists is defined and not is_debian and remote_admin_allowed
 
 - name:  enable the openvpn tunnel at boot time for Debian
   shell: update-rc.d openvpn enable
-  when:  openvpn_enabled and not stat.exists is defined and is_debian
+  when:  openvpn_enabled and not stat.exists is defined and is_debian and remote_admin_allowed
 
 - name:  start the openvpn tunnel now
   shell: systemctl start openvpn@xscenet.service
@@ -93,6 +103,11 @@
   shell:   systemctl stop openvpn@xscenet.service
   ignore_errors: True
   when:    not openvpn_enabled and not installing
+
+- name:    Set the handle
+  template: src=openvpn_handle
+            dest=/etc/xsce/handle
+  when: handle is defined
 
 - name: Add openvpn to service list
   ini_file: dest='{{ service_filelist }}'

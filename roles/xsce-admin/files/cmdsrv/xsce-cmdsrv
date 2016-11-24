@@ -1225,10 +1225,13 @@ def poweroff_server(cmd_info):
 
 def remote_admin_ctl(cmd_info):
     try:
-        bool_activate = cmd_info['cmd_args']['activate']
-        outp = subprocess.Popen(["scripts/remote_admin_ctl.sh",bool_activate])
-        resp = get_remote_admin_status(cmd_info)
-        return (resp)
+        if 'cmd_args' in cmd_info and 'activate' in cmd_info['cmd_args']:
+		bool_activate = cmd_info['cmd_args']['activate']
+		outp = subprocess.Popen(["scripts/remote_admin_ctl.sh",bool_activate])
+		resp = get_remote_admin_status(cmd_info)
+		return (resp)
+        else:
+            print('cmd_info error')
     except:
         return cmd_malformed(cmd_info['cmd'])
 

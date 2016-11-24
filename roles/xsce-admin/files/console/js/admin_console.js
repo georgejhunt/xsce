@@ -38,6 +38,9 @@ sysStorage.root = {};
 sysStorage.library = {};
 sysStorage.library.partition = false; // no separate library partition
 sysStorage.zims_selected_size = 0;
+var openvpn_enabled = 'false';
+var teamviewer_enabled = 'false';
+var remote_admin_allowed = 'false';
 
 // because jquery does not percolate .fail conditions in async chains
 // and because an error returned from the server is not an ajax error
@@ -105,6 +108,11 @@ function controlButtonsEvents() {
   $("#POWEROFF").click(function(){
     poweroffServer();
   });
+
+  $("#REMOTE-ADMIN-CTL").click(function(){
+    remoteControl();
+  });
+
   console.log(' REBOOT and POWEROFF set');
 }
 
@@ -1524,6 +1532,74 @@ function poweroffServer()
   return true;
 }
 
+function remoteControl()
+{
+  var cmd_args = {};
+  consoleLog('old remote_admin_allowed: ' + remote_admin_allowed);
+  if (remote_admin_allowed == 'True'){
+     cmd_args['activate'] = 'False';
+     remote_admin_allowed = 'False';
+  } else {
+     cmd_args['activate'] = 'True';
+     remote_admin_allowed = 'True';
+  }
+  var command = "REMOTE-ADMIN-CTL " + JSON.stringify(cmd_args);
+  sendCmdSrvCmd(command, genericCmdHandler);
+  //alert ("RemoteControl cmd: " + command);
+  remoteSetCurrent();
+  return true;
+}
+
+function remoteStatusHandler(data)
+{ 
+   consoleLog(data);
+   // set the globals
+   openvpn_enabled = data["openvpn_enabled"];
+   teamviewer_enabled = data["teamviewer_enabled"];
+   remote_admin_allowed = data["remote_admin_allowed"];
+   var handle = data['handle'];
+
+   remoteWarn(remote_admin_allowed);
+   remoteSetButton(remote_admin_allowed);
+   return true;
+}
+
+function remoteSetCurrent()
+{
+  var command = "GET-REMOTE-ADMIN-STATUS";
+  sendCmdSrvCmd(command, remoteStatusHandler);
+  return true;
+}
+
+function remoteWarn(enabled)
+{
+  if ( enabled == "True" ){
+    var html = "Remote Administration has been turned ON. Openvpn and Teamviewer are now permitted. <br>Openvpn or Teamviewer services must also be started via checkbox in Configure->Services->Openvpn.<br>";
+    $("#warning").html(html);
+    $("#warning").prop("class", "btn btn-danger");
+    $("#warning").prop("style","align='center'");
+
+  } else {
+    var html = "Remote Administration has been turned OFF. OpenVPN and Teamviewer deamons are now off. <br>In future if you want to re-enable remote maintenance and product improvement, click on the ENABLE Remote Access button.";
+    $("#warning").html(html);
+    $("#warning").prop("class","btn btn-success");
+    $("#warning").prop("style","align='center'");
+  }
+}
+
+function remoteSetButton(enabled)
+{
+  if ( enabled == "True" ){
+    $("#R-LABEL").html("DISABLE Remote Access");
+    $("#REMOTE").prop("class", "btn btn-lg btn-success");
+    //$("#R-LABEL").prop("class", "btn btn-lg btn-success");
+  } else {
+    $("#R-LABEL").html("ENABLE Remote Access");
+    $("#REMOTE").prop("class","btn btn-lg btn-danger");
+    //$("#R-LABEL").prop("class", "btn btn-lg btn-danger");
+  }
+}
+
 function getHelp(arg)
 {
   $.get( "help/" + arg, function( data ) {
@@ -1777,6 +1853,7 @@ function init ()
   initStat["error"] = false;
   initStat["alerted"] = {};
 
+  remoteSetCurrent(); // set the color,button text, warning for REMOTE access  
   displayServerCommandStatus("Starting init");
 
   getServerInfo(); // see if we can connect
