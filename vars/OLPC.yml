@@ -1,5 +1,5 @@
 is_debian: false
-is_centos: true
+is_centos: false
 dns_service: named
 dns_user: named
 proxy: squid
@@ -15,4 +15,3 @@ systemctl_program: /usr/bin/systemctl
 mysql_service: mariadb
 apache_log: /var/log/httpd/access_log
 apache_log_dir: /var/log/httpd
-sshd_service: sshd
