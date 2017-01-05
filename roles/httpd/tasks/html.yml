@@ -58,3 +58,7 @@
         owner=root
         group=root
         state=link
+
+- name: Create home directory
+  file: dest={{ doc_root }}/home
+        state=directory
