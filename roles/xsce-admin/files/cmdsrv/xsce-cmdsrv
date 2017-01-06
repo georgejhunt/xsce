@@ -31,7 +31,6 @@ import string
 import crypt
 import spwd
 import cracklib
-import platform
 
 # Config Files
 xsce_config_file = "/etc/xsce/xsce.env"
@@ -48,20 +47,6 @@ cmdsrv_no_workers = 5
 cmdsrv_job_poll_sleep_interval = 1
 cmdsrv_max_concurrent_jobs = 7
 
-# variables that have different paths, fedora vs debian
-if platform.linux_distribution()[0] == 'debian':
-   ansible_playbook_program = '/usr/local/bin/ansible-playbook'
-   ansible_program = '/usr/local/bin/ansible'
-   apache_data = 'www-data'
-   squid_service = 'squid3'
-   df_program = '/bin/df'
-else:
-   ansible_playbook_program = '/usr/bin/ansible-playbook'
-   ansible_program = '/usr/bin/ansible'
-   apache_data = 'apache'
-   squid_service = 'squid'
-   df_program = '/usr/bin/df'
-
 # Derived Variables
 xsce_cmdsrv_path = xsce_base_path + "/xsce_cmdsrv"
 xsce_cmdsrv_pid_file = "/var/run/xsce-cmdsrv.pid"
@@ -69,7 +54,6 @@ xsce_cmdsrv_ready_file = "/var/run/xsce-cmdsrv-ready"
 xsce_cmdsrv_dbpath = xsce_cmdsrv_path + "/" + xsce_cmdsrv_dbname
 
 # Constants - ToDo add to xsce_cmdsrv_config_file
-squid_whitelist = "/etc/" + squid_service + "/sites.whitelist.txt"
 # for kiwix zims
 kiwix_catalog_file = "/etc/xsce/kiwix_catalog.json"
 zim_downloads_dir = "/library/downloads/zims/"
@@ -578,7 +562,7 @@ def cmd_handler(cmd_msg):
         "SET-CONF": set_config_vars,
         "GET-MEM-INFO": get_mem_info,
         "GET-SPACE-AVAIL": get_space_avail,
-        "GET-STORAGE-INFO": get_storage_info,
+        "GET-STORAGE-INFO": get_storage_info_lite,
         "RUN-ANSIBLE": run_ansible,
         "RESET-NETWORK": run_ansible,
         "GET-JOB-STAT": get_last_jobs_stat,
@@ -1906,6 +1890,12 @@ def read_xsce_cmdsrv_conf_file():
     global rachel_downloads_dir
     global rachel_working_dir
     global rachel_version
+    global ansible_playbook_program
+    global ansible_program
+    global apache_data
+    global squid_service
+    global df_program
+    global squid_whitelist
 
 
     stream = open (xsce_cmdsrv_config_file,"r")
@@ -1922,6 +1912,12 @@ def read_xsce_cmdsrv_conf_file():
     zim_download_prefix = conf['zim_download_prefix']
     rachel_downloads_dir = conf['rachel_downloads_dir']
     rachel_working_dir = conf['rachel_working_dir']
+    squid_service = conf['squid_service']
+    squid_whitelist = "/etc/%s/sites.whitelist.txt" % squid_service
+    ansible_playbook_program = conf['ansible_playbook_program']
+    ansible_program = conf['ansible_program']
+    apache_data = conf['apache_data']
+    df_program = conf['df_program']
 
 # These two were taken from the OLPC idmgr application
 

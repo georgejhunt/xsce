@@ -62,9 +62,31 @@
     - { src: 'named/school.local.zone.db', dest: '/var/named-xs/school.local.zone.db' , owner: "root" , mode: '0644'}
     - { src: 'named/school.internal.zone.in-addr.db.j2', dest: '/var/named-xs/school.internal.zone.in-addr.db' , owner: "{{ dns_user }}" , mode: '0644'}
     - { src: 'named/dummy', dest: '/var/named-xs/data/dummy' , owner: "{{ dns_user }}" , mode: '0644'}
+    - { src: 'named/named.blackhole', dest: '/var/named-xs/named.blackhole' , owner: "{{ dns_user }}" , mode: '0644'}
 
 - name: substitute our unit file which uses $OPTIONS from sysconfig
   template: src=named/{{ dns_service }}.service
             dest=/etc/systemd/system/{{ dns_service }}.service
             mode=0644
   
+- name: The dns-jail redirect requires the named.blackhole,disabling recursion
+#        in named-xs.conf, and the redirection of 404 error documents to /
+  template: src=named/dns-jail.conf dest=/etc/{{ apache_config_dir }}/
+  when: dns_jail_enabled
+
+- name: Separate enabling required for debian
+  file: src=/etc/{{ apache_config_dir }}/dns-jail.conf
+        path=/etc/{{ apache_service }}/sites-enabled/dns-jail.conf
+        state=link 
+  when: is_debian and dns_jail_enabled
+
+- name: Separate enabling/disabling required for debian
+  file: src=/etc/{{ apache_config_dir }}/dns-jail.conf
+        path=/etc/{{ apache_service }}/sites-enabled/dns-jail.conf
+        state=absent 
+  when: is_debian and not dns_jail_enabled
+
+- name: Separate enabling/disabling required for non debian
+  file: path=/etc/{{ apache_config_dir }}/dns-jail.conf
+        state=absent 
+  when: not is_debian and not dns_jail_enabled

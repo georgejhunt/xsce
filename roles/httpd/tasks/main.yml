@@ -18,6 +18,12 @@
     - download
   when: not is_debian
 
+- name: remove the default apache2 config file
+  file: path=/etc/apache2/sites-enabled/000-default.conf
+        src=/etc/apache2/sites-available/000-default.conf
+        state=absent
+  when: is_debian
+
 - name: Create httpd config files
   template: backup=yes
             src={{ item.src }}
@@ -88,7 +94,7 @@
         createhome=no
 
 - name: Create httpd log dir
-  file: path=/var/log/{{ apache_user }}
+  file: path=/var/log/{{ apache_service }}
         mode=0755
         owner={{ apache_data }}
         group={{ apache_data }}
@@ -101,4 +107,8 @@
 - name: Enable httpd
   service: name={{ apache_service }}
            enabled=yes
+
+- include: html.yml
+  tags:
+    - base
 

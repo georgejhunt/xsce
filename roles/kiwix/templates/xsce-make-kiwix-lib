@@ -1,0 +1,9 @@
+#!/bin/sh
+
+{{systemctl_program }} stop kiwix-serve
+/usr/bin/xsce-make-kiwix-lib.py
+/usr/bin/xsce-make-apache-config.py
+{{ systemctl_program }} start kiwix-serve
+{{ systemctl_program }} restart {{ apache_service }} 
+
+exit 0

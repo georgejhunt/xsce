@@ -1,8 +1,8 @@
 #!/bin/sh
 
-source /etc/xsce/xsce.env
+. /etc/xsce/xsce.env
 
-if [ "$OS" == "debian"
+if [ "$OS" = "Debian" ] || [ "$OS" = "raspbian" ]; then
 	/bin/sleep 3
 	/sbin/reboot
 else
