@@ -10,14 +10,15 @@
   register: elgg
 
 - name: Expand it to our location
-  unarchive: dest=/opt/
+  unarchive: dest=/opt/elgg-{{ elgg_version }}
              src={{ downloads_dir }}/elgg-{{ elgg_version }}.zip
   when: elgg.stat.exists is defined and not elgg.stat.exists
 
 - name: change ownership
-  file: path=/opt/elgg-{{elgg_version }}
-        owner=apache
+  file: path=/opt/elgg-{{elgg_version }}/
+        owner={{ apache_data }}
         recurse=yes
+        state=directory
 
 - name: Create a link to the versioned elgg folder
   file: src=./elgg-{{ elgg_version }}

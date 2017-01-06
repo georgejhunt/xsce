@@ -11,18 +11,6 @@
      xsce_base_ver: '{{ ansible_local["local_facts"]["xsce_base_ver"] }}'
      xsce_preload: '{{ ansible_local["local_facts"]["xsce_preload"] }}'
 
-- name: Defaulting xsce_base_ver
-  set_fact:
-     xsce_base_ver: 0
-  when: xsce_base_ver == ""
-
-- name: Defaulting xsce_prepped
-  set_fact:
-     xsce_prepped: False
-  tags:
-    - download
-    - download2
-
 - name: Set exFAT enabled for XOs
   set_fact:
      exFAT_enabled: True
@@ -114,36 +102,6 @@
   set_fact:
     mysql_service: mysql
   when: ansible_distribution == "Debian" 
-
-- name: Fedora 20
-  set_fact:
-    is_F20: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version == "20"
-
-- name: Fedora 21
-  set_fact:
-    is_F21: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version == "21"
-
-- name: Fedora 22
-  set_fact:
-    is_F22: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version == "22"
-
-- name: Fedora 23
-  set_fact:
-    is_F23: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version == "23"
-
-- name: Fedora 24
-  set_fact:
-    is_F24: True
-  when: ansible_distribution == "Fedora" and ansible_distribution_version == "24"
-
-- name: CentOS
-  set_fact:
-    is_CentOS: True
-  when: ansible_distribution == "CentOS"
 
 - name: Set kiwix source file name i686
   set_fact:

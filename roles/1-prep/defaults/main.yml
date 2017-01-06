@@ -1,8 +1,3 @@
-# use these as a tag a release at a point in time
-xsce_base_ver: 0
-gui_version: 2
-NUC6_firmware_needed: False
-
 # These entries should never be changed in this file.
 # These are defaults for boolean routines, 
 installing: False
@@ -13,15 +8,11 @@ wireless_lan_present: False
 udev_needs_patch: False
 strict_networking: False
 xsce_demo_mode: False
+xsce_prepped: False
 gw_active: False
 gui_static_wan: False
 has_internet_connection: False
 is_F18: False
-is_F20: False
-is_F21: False
-is_F22: False
-is_F23: False
-is_F24: False
 
 # Set default for discovered hardware
 driver_name: nl80211
