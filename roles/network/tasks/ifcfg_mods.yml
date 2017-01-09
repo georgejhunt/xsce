@@ -28,7 +28,7 @@
   shell: nmcli con delete id xsce-LAN
   ignore_errors: True
   changed_when: False
-  when: xsce_prepped and (num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none")
+  when: (num_lan_interfaces != "0" or xsce_wireless_lan_iface != "none")
 
 ## vars/ users should set user_wan_iface to avoid messy redetect
 - include: redetect.yml
