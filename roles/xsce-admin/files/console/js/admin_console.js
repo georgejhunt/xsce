@@ -1237,7 +1237,7 @@ function procJobStat(data)
     $(this).scrollTop(this.scrollHeight);
   });
   today = new Date();
-  $( "#statusJobsRefreshTime" ).html("Last Refreshed: <b>" + today.toLocaleString() + "</b>");
+  $( "#statusJobsRefreshTime" ).html("Last Refreshed: <b>" + today.toLocaleString() + "</b><br>    In UTC: " + today.toUTCString());
 }
 
 function cancelJob(job_id)
