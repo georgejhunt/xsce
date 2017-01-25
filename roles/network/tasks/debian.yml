@@ -9,6 +9,12 @@
 #   4. In lan_controller: wan is off, eth0 and wlan0 under br0
 #   5. In gateway: eth0 is wan, and wlan0 is under br0 (only one adapter under br0)
 #   6. As a slight concess to auto config, if eth1 exists, make it wan, and force gateway
+
+# Lessons learned
+# in LanController mode:
+#  bridge needs to come up first
+#  make systemd hostapd come up after br0
+#  make dhcpd come up after br0
  
 - debug: var=discovered_lan_iface
 - debug: var=discovered_wan_iface
@@ -20,13 +26,17 @@
 
 - name: default to lan controller
   set_fact:
-      gui_desired_network_role: "lan_controller"
+      gui_desired_network_role: "LanController"
   when: not gui_desired_network_role is defined
 
-- name: Copy the bridge script 
-  template: dest=/etc/network/interfaces.d/br0
-            src=network/br0.j2
+- name: Copy the network config script 
+  template: dest=/etc/network/interface
+            src=network/interfaces.j2
   register: interface
+
+- name: If this was a change, things need to shift
+  service: name=networking state=stopped
+  when: interface.changed
 
 - name: If this was a change, things need to shift
   service: name=hostapd state=stopped
@@ -40,12 +50,16 @@
   service: name=networking state=restarted
   when: interface.changed
   
+- name: start the systemd networking daemon
+  service: name=systemd-networkd state=restarted enabled=yes
+  when: interface.changed
+  
 - name: start up hostapd again
   service: name=hostapd state=started
   when: interface.changed
 
 - name: dhcpd may be affected
-  service: name=bind9 state=started
+  service: name=dhcpd state=started
   when: interface.changed
 
 #create lan br0 if lan_controller or gateway

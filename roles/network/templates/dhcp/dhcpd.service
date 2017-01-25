@@ -1,9 +1,12 @@
 [Unit]
 Description=DHCPv4 Server Daemon
+Requires=systemd-networkd.socket
+After=systemd-networkd.socket
 After=syslog.target network.target
 
 [Service]
 EnvironmentFile=/etc/sysconfig/dhcpd
+ExecStartPre=/lib/systemd/systemd-networkd-wait-online --interface=br0
 ExecStart=/usr/sbin/dhcpd -f --no-pid $DHCPDARGS
 
 [Install]
