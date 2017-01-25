@@ -8,12 +8,12 @@ allow-hotplug {{ discovered_wan_iface }}
 iface eth0 inet manual
 
 {% if discovered_wireless_iface != "none" %}
-        # we always want the wireless to be configured (and under bridge)
-	auto {{ discovered_wireless_iface }}
-	allow-hotplug {{ discovered_wireless_iface }}
-	iface {{discovered_wireless_iface }} inet manual
-	   pre-up   ifconfig $IFACE up
-	   pre-down ifconfig $IFACE down
+# we always want the wireless to be configured (and under bridge)
+auto {{ discovered_wireless_iface }}
+allow-hotplug {{ discovered_wireless_iface }}
+iface {{discovered_wireless_iface }} inet manual
+pre-up   ifconfig $IFACE up
+pre-down ifconfig $IFACE down
 {% endif %}
 
 {% if gui_desired_network_role == "Appliance"  %}
@@ -62,11 +62,12 @@ iface br0 inet static
     gateway {{ lan_ip }}
     dns-nameservers {{ lan_ip }}
     pre-up ifconfig {{ discovered_wan_iface }} 0.0.0.0 up
+
     post-down ip link set {{ discovered_wan_iface }} down
     post-down ip link set {{ discovered_wireless_iface }} down
     post-down brctl delif br0 {{ discovered_wan_iface }} {{ discovered_wireless_iface }}
-  post-down ip link set br0 down
-  post-down brctl delbr br0
+    post-down ip link set br0 down
+    post-down brctl delbr br0
 
 {% endif %}
 

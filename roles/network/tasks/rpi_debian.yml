@@ -21,8 +21,8 @@
        discovered_wan_iface: eth0
        
 - name: Copy the bridge script 
-  template: dest=/etc/network/interfaces.d/br0
-            src=network/br0.j2
+  template: dest=/etc/network/interfaces
+            src=network/interfaces.j2
   register: interface
 
 - name: If this was a change, things need to shift
@@ -30,7 +30,7 @@
   when: interface.changed
 
 - name: dhcpd may be affected
-  service: name=bind9 state=stopped
+  service: name=dhcpd state=stopped
   when: interface.changed
 
 - name: Tear down any bridge and start fresh
@@ -52,12 +52,16 @@
   service: name=networking state=restarted
   when: interface.changed
   
+- name: start the systemd networking daemon
+  service: name=ifup-wait-all-auto.service state=restarted enabled=yes
+  when: interface.changed
+  
 - name: start up hostapd again
   service: name=hostapd state=started
   when: interface.changed
 
 - name: dhcpd may be affected
-  service: name=bind9 state=started
+  service: name=dhcpd state=started
   when: interface.changed
 
 #create lan br0 if lan_controller or gateway

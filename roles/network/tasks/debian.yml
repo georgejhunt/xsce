@@ -30,7 +30,7 @@
   when: not gui_desired_network_role is defined
 
 - name: Copy the network config script 
-  template: dest=/etc/network/interface
+  template: dest=/etc/network/interfaces
             src=network/interfaces.j2
   register: interface
 
@@ -43,7 +43,7 @@
   when: interface.changed
 
 - name: dhcpd may be affected
-  service: name=bind9 state=stopped
+  service: name=dhcpd state=stopped
   when: interface.changed
 
 - name: restart the networking service
