@@ -13,18 +13,18 @@
 - name: get the createrepo program
   package: name=createrepo
            state=present
-  when: ansible_distribution != "Debian"
+  when: ansible_distribution == "Fedora" or ansible_distribution == "CentOS"
 
 - name: Create local repo
   shell: createrepo {{ yum_packages_dir }}
-  when: ansible_distribution != "Debian"
+  when: ansible_distribution == "Fedora" or ansible_distribution == "CentOS"
 
 - name: Install local repo file.
   template: dest=/etc/yum.repos.d/xsce-local.repo
             src=local.repo
             owner=root
             mode=0644
-  when: ansible_distribution != "Debian"
+  when: ansible_distribution == "Fedora" or ansible_distribution == "CentOS"
 
 - name: Install yum packages
   package: name={{ item }}
@@ -36,7 +36,7 @@
    - linux-firmware
    - syslog
    - xml-common
-  when: ansible_distribution != "Debian"
+  when: ansible_distribution == "Fedora" or ansible_distribution == "CentOS"
   tags:
     - download
 
@@ -46,7 +46,7 @@
   with_items:
     - inetutils-syslogd
     - wpasupplicant
-  when: ansible_distribution == "Debian"
+  when: ansible_distribution == "Debian" or ansible_distrubution == "Ubuntu"
   tags:
     - download
 
@@ -87,7 +87,7 @@
    - glibc # CVE-2015-7547
    - bash
    - iptables
-  when: ansible_distribution != "Debian"
+  when: ansible_distribution == "Fedora" or ansible_distribution == "CentOS"
   tags:
     - download
 
@@ -98,7 +98,7 @@
    - libc6
    - bash
    - iptables
-  when: ansible_distribution == "Debian"
+  when: ansible_distribution == "Debian" or ansible_distrubution == "Ubuntu"
   tags:
     - download
 
