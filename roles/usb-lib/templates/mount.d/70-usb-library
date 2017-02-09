@@ -45,3 +45,10 @@ if [ "$SHARE_DIR" != "" ];then
   logger -p user.notice -t "70-usb-library" -- "Creating link to $CONTENT_LINK."
   ln -s $SHARE_DIR $CONTENT_LINK
 fi
+
+# look for any stale links
+for f in `ls {{ doc_root }}/local_content/USB*`; do
+  if [ ! -L $f ]; then
+     rm $f
+  fi
+done
