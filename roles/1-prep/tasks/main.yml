@@ -90,6 +90,22 @@
 - include: raspberry_pi_2.yml
   when: rpi_model != "none"
 
+# consolidate with above eventually
+- name: put expansion in place for x86
+  template: src=xsce-last-resize.service
+            dest=/etc/systemd/system/
+  when: not is_rpi
+
+- name: turn on the service for non rpi
+  service:  name=xsce-last-resize.service
+            state= enabled
+  when: not is_rpi
+
+- name: put the expansion script in place
+  template: src=xsce-expand-last.sh
+            dest=/usr/sbin/xsce-expand-last.sh
+  when: not is_rpi
+
 - name: Check if the identifier for intel's NUC6 builtin wifi is present
   shell: "lsusb | grep 8087:0a2b | wc |gawk '{print $1}'"
   register: usb_NUC6
