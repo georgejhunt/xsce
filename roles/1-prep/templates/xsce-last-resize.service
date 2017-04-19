@@ -1,5 +1,5 @@
 [Unit]
-Description=Root Filesystem Auto-Resizer
+Description=Last Partition Auto-Resizer
 
 [Service]
 Environment=TERM=linux

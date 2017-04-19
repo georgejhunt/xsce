@@ -96,14 +96,16 @@
             dest=/etc/systemd/system/
   when: not is_rpi
 
-- name: turn on the service for non rpi
-  service:  name=xsce-last-resize.service
-            state= enabled
-  when: not is_rpi
-
 - name: put the expansion script in place
   template: src=xsce-expand-last.sh
             dest=/usr/sbin/xsce-expand-last.sh
+            mode=0755
+  when: not is_rpi
+
+- name: turn on the service for non rpi
+  service:  name=xsce-last-resize.service
+            state=started
+            enabled=true
   when: not is_rpi
 
 - name: Check if the identifier for intel's NUC6 builtin wifi is present
